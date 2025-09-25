@@ -1,0 +1,106 @@
+﻿using Microsoft.UI.Xaml.Media.Imaging;
+using System;
+using System.Collections.Generic;
+//using System.Drawing;
+//using System.Drawing.Imaging;
+using System.IO;
+using System.Windows.Forms;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
+using Windows.Storage.Streams;
+using ImageMagick;
+
+namespace AzusaCaptureApp;
+
+/// <summary>
+/// MemoryStreamの管理まで担当するModel
+/// </summary>
+public static class CaptureMng
+{
+    const int w = 1920;
+    const int h = 1080;
+    //static MemoryStream ms;
+    static string saveto = "";
+
+    public static void Init(string s, MemoryStream ms)
+    {
+        ms = new MemoryStream();
+        saveto = s;
+    }
+
+    public static BitmapImage CaptureFullScreen(MemoryStream ms)
+    {
+        var img = new MagickImage();
+        img.Read("SCREENSHOT", MagickFormat.Screenshot);
+        img.Format = MagickFormat.Bmp;
+
+        ms.SetLength(0);
+        ms.Write(img.ToByteArray());
+        
+        return ConvertFromBytes(img.ToByteArray());
+
+    }
+
+    public static BitmapImage Trim(int x, int y, int w, int h, MemoryStream ms)
+    {
+        var bytes = new byte[ms.Length];
+        ms.Read(bytes, 0, (int)ms.Length);
+        var img = new MagickImage(bytes);
+        img.Crop(new MagickGeometry(x,y,(uint)w,(uint)h));
+        ms.SetLength(0);
+        ms.Capacity = 0;
+        ms.Position = 0;
+        ms.Write(img.ToByteArray());
+
+        return ConvertFromBytes(img.ToByteArray());
+    }
+
+    public static BitmapImage ConvertFromBytes(byte[] bytes)
+    {
+        using var ms = new MemoryStream(bytes);
+
+        var bitmapiamge = new BitmapImage();
+        bitmapiamge.SetSource(ms.AsRandomAccessStream());
+        return bitmapiamge;
+    }
+    public static BitmapImage ConvertFrom(MemoryStream m)
+    {
+        m.Position = 0;
+        var bitmapiamge = new BitmapImage();
+        bitmapiamge.SetSource(m.AsRandomAccessStream());
+        return bitmapiamge;
+    }
+
+    public static void SaveTo(string path, MemoryStream ms)
+    {
+        if (ms.Length == 0) return;
+
+        //var fs = new FileStream(path, FileMode.CreateNew);
+
+        //var bmp = new Bitmap(ms);
+        //SaveTo(path, bmp);
+        //ms.Position = 0;
+
+
+        SaveTo(path, ms, MagickFormat.Png);
+
+    }
+
+    public static void SaveTo(string path, MemoryStream ms, MagickFormat format)
+    {
+        ms.Position = 0;
+        var img = new MagickImage(ms);
+        img.Format = format;
+        using var fs = new FileStream(path, FileMode.CreateNew);
+        img.Write(fs);
+    }
+    
+    public static void SetCipboard(MemoryStream ms)
+    {
+        //msにはpng形式の画像が入ってる
+        var bmp = new System.Drawing.Bitmap(ms);
+       System.Windows.Forms.Clipboard.SetImage(bmp);
+    }
+}

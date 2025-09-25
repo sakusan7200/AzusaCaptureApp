@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="AzusaCaptureApp.CaptureWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AzusaCaptureApp"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="CaptureWindow" 
+    Activated="Window_Activated">
+
+    <Grid x:Name="mainContent">
+        <!-- 背景Canvas -->
+        <Canvas x:Name="cnv"
+            Canvas.ZIndex="0"
+            Background="Transparent"
+                        PointerMoved="cnv_PointerMoved"
+            PointerPressed="cnv_PointerPressed"
+            PointerReleased="cnv_PointerReleased">
+            <Image x:Name="img" 
+               Source="{Binding CurrentImgSource}"
+               IsHitTestVisible="False"/>
+        </Canvas>
+        <!--アニメーションpngがあるんだとか-->
+        <!-- 中央配置のツールバー -->
+        <StackPanel Orientation="Horizontal"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Top"
+                Spacing="8"
+                Canvas.ZIndex="10"
+                Background="#66000000"
+                Padding="4"
+                CornerRadius="4">
+            <AppBarToggleButton x:Name="FullScrCapToggleButton" IsChecked="{Binding FullScrChecked, Mode=TwoWay}" Icon="Accept" Label="画面全体"/>
+            <AppBarToggleButton x:Name="AreaCapToggleButton" IsChecked="{Binding AreaCapChecked, Mode=TwoWay}" Icon="Accept" Label="範囲選択"/>
+            <AppBarToggleButton x:Name="FreeHandCapToggleButton" IsChecked="{Binding FreeHandChecked, Mode=TwoWay}" Icon="Accept" Label="フリーハンド"/>
+            <AppBarToggleButton x:Name="WindowCapToggleButton" IsChecked="{Binding WindowChecked, Mode=TwoWay}" Icon="Accept" Label="ウィンドウ"/>
+            <AppBarSeparator/>
+            <AppBarToggleButton x:Name="FullScrGIFCapToggleButton" IsChecked="{Binding FullScrGIFChecked, Mode=TwoWay}" Icon="Video" Label="全画面GIF"/>
+            <AppBarToggleButton x:Name="WindowGIFCapToggleButton" IsChecked="{Binding WindowGIFChecked, Mode=TwoWay}" Icon="Video" Label="ウィンドウGIF"/>
+            
+            <AppBarSeparator/>
+            <AppBarButton Icon="Cancel" Label="キャンセル" Command="{Binding CancelBtnCommand}"/>
+        </StackPanel>
+        
+    </Grid>
+
+
+</Window>

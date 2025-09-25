@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "AzusaCaptureApp (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "AzusaCaptureApp (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}
