@@ -286,10 +286,8 @@ public partial class MainViewModel : ObservableObject
 
         var file = await savePicker.PickSaveFileAsync();
 
-        var n = savePicker.SuggestedFileName;
         Debug.WriteLine(file.Name);
 
-        
 
         CaptureMng.SaveTo(file.Path, memStrm);
     }

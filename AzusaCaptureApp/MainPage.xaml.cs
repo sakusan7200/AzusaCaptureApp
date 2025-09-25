@@ -37,8 +37,10 @@ public sealed partial class MainPage : Page
 
         taskbaricon.DataContext = App.VM;
 
+        Canvas.SetLeft(selectionAreaRectangle, 0);
+        Canvas.SetTop(selectionAreaRectangle, 0);
 
-        img.SizeChanged += ImgSizeChanged;
+        fullSizeImg.SizeChanged += ImgSizeChanged;
 
         TopLeftThumb.DragDelta += (sender,args)=>
         {
@@ -47,6 +49,8 @@ public sealed partial class MainPage : Page
             var newTop = Canvas.GetTop(selectionAreaRectangle) + args.VerticalChange;
             var newWidth = selectionAreaRectangle.Width - args.HorizontalChange;
             var newHeight = selectionAreaRectangle.Height - args.VerticalChange;
+            if (newLeft < 0 || newTop < 0 || newWidth <= 0 || newHeight <= 0 || newWidth > imgWidth || newHeight > imgHeight) return;
+
 
             if (newWidth > 0 && newHeight > 0)
             {
@@ -67,6 +71,8 @@ public sealed partial class MainPage : Page
             var newWidth = selectionAreaRectangle.Width + args.HorizontalChange;
             var newHeight = selectionAreaRectangle.Height - args.VerticalChange;
 
+            if (newLeft < 0 || newTop < 0 || newWidth <= 0 || newHeight <= 0 || newWidth > imgWidth || newHeight > imgHeight) return;
+
             //Canvas.SetLeft(selectionAreaRectangle, newLeft);
             Canvas.SetTop(selectionAreaRectangle, newTop);
 
@@ -86,6 +92,10 @@ public sealed partial class MainPage : Page
             var newWidth = selectionAreaRectangle.Width - args.HorizontalChange;//
             var newHeight = selectionAreaRectangle.Height + args.VerticalChange;
 
+            if (newLeft < 0 || newTop < 0 || newWidth <= 0 || newHeight <= 0 || newWidth > imgWidth || newHeight > imgHeight) return;
+
+
+
             Canvas.SetLeft(selectionAreaRectangle, newLeft);
             //Canvas.SetTop(selectionAreaRectangle, newTop);
 
@@ -104,6 +114,8 @@ public sealed partial class MainPage : Page
             var newTop = Canvas.GetTop(selectionAreaRectangle);
             var newWidth = selectionAreaRectangle.Width + args.HorizontalChange;//
             var newHeight = selectionAreaRectangle.Height + args.VerticalChange;
+            if (newLeft < 0 || newTop < 0 || newWidth <= 0 || newHeight <= 0 || newWidth > imgWidth || newHeight > imgHeight) return;
+
 
             //Canvas.SetLeft(selectionAreaRectangle, newLeft);
             //Canvas.SetTop(selectionAreaRectangle, newTop);
@@ -128,15 +140,10 @@ public sealed partial class MainPage : Page
         imgContent.Width = args.NewSize.Width;
         imgContent.Height = args.NewSize.Height;
 
-        //cnvLinkedSizeGrid.Width = args.NewSize.Width;
-        //cnvLinkedSizeGrid.Height = args.NewSize.Height;
-
 
         selectionAreaRectangle.Width = args.NewSize.Width;
         selectionAreaRectangle.Height = args.NewSize.Height;
 
-        Canvas.SetLeft(selectionAreaRectangle, 0);
-        Canvas.SetTop(selectionAreaRectangle, 0);
 
 
         Canvas.SetLeft(TopRightThumb, args.NewSize.Width - 10);
@@ -197,6 +204,7 @@ public sealed partial class MainPage : Page
         cmdBar.Visibility = Visibility.Collapsed;
         trimCmdBar.Visibility = Visibility.Visible;
         fullSizeImg.Visibility = Visibility.Visible;
+        img.Visibility = Visibility.Collapsed;
         //ImgSizeChanged(null, )
         //selectionAreaRectangle.Width = 
     }
@@ -207,6 +215,8 @@ public sealed partial class MainPage : Page
         cmdBar.Visibility = Visibility.Visible;
         trimCmdBar.Visibility = Visibility.Collapsed;
         fullSizeImg.Visibility = Visibility.Collapsed;
+        img.Visibility = Visibility.Visible;
+
 
         return selectionAreaRectangle;
     }

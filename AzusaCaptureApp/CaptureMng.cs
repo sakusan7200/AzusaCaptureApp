@@ -11,11 +11,12 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.Streams;
 using ImageMagick;
+using System.Diagnostics;
 
 namespace AzusaCaptureApp;
 
 /// <summary>
-/// MemoryStreamの管理まで担当するModel
+/// msにはスクショ時以外書き込まない方針
 /// </summary>
 public static class CaptureMng
 {
@@ -46,13 +47,14 @@ public static class CaptureMng
     public static BitmapImage Trim(int x, int y, int w, int h, MemoryStream ms)
     {
         var bytes = new byte[ms.Length];
+        ms.Position = 0;
         ms.Read(bytes, 0, (int)ms.Length);
         var img = new MagickImage(bytes);
         img.Crop(new MagickGeometry(x,y,(uint)w,(uint)h));
-        ms.SetLength(0);
-        ms.Capacity = 0;
-        ms.Position = 0;
-        ms.Write(img.ToByteArray());
+        //ms.SetLength(0);
+        //ms.Capacity = 0;
+        //ms.Position = 0;
+        //ms.Write(img.ToByteArray());
 
         return ConvertFromBytes(img.ToByteArray());
     }
@@ -93,7 +95,8 @@ public static class CaptureMng
         ms.Position = 0;
         var img = new MagickImage(ms);
         img.Format = format;
-        using var fs = new FileStream(path, FileMode.CreateNew);
+        using var fs = new FileStream(path, FileMode.Create);
+        Debug.WriteLine("aaaa");
         img.Write(fs);
     }
     
