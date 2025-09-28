@@ -17,6 +17,8 @@ using Windows.Foundation;
 //using System.Windows.Media.Imaging;
 using Point = Windows.Foundation.Point;
 using Rectangle = Microsoft.UI.Xaml.Shapes.Rectangle;
+using ImageMagick;
+using System.Collections.ObjectModel;
 
 namespace AzusaCaptureApp;
 
@@ -37,11 +39,11 @@ public partial class MainViewModel : ObservableObject
 
         Setting = new AppSetting();
 
-       TestValue = "A";
+        TestValue = "A";
 
 
         //設定読み出し
-        if(File.Exists(Cont.SettingDir + "\\settings.json"))
+        if (File.Exists(Cont.SettingDir + "\\settings.json"))
         {
             var jsonstr = File.ReadAllText(Cont.SettingDir + "\\settings.json");
             Setting = JsonConvert.DeserializeObject<AppSetting>(jsonstr);
@@ -52,12 +54,22 @@ public partial class MainViewModel : ObservableObject
             Setting = new AppSetting();
             Setting.SaveTo = Cont.DefaultSaveDir;
         }
+
+
+
+        AllFormats.Add(new CompatibleFormat(MagickFormat.Png, "png", "PNG画像"));
+        AllFormats.Add(new CompatibleFormat(MagickFormat.Jpg, "jpg", "JPG画像"));
+        AllFormats.Add(new CompatibleFormat(MagickFormat.Jpg, "jpg", "JPG画像"));
+        AllFormats.Add(new CompatibleFormat(MagickFormat.Jpg, "jpg", "JPG画像"));
+        AllFormats.Add(new CompatibleFormat(MagickFormat.Jpg, "jpg", "JPG画像"));
+        AllFormats.Add(new CompatibleFormat(MagickFormat.Jpg, "jpg", "JPG画像"));
+        ///AllFormats.Add("JPG");
     }
 
     private void MainViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
         //トグルボタンの切り替え
-        if(e.PropertyName.EndsWith("Checked"))
+        if (e.PropertyName.EndsWith("Checked"))
         {
             switch (e.PropertyName)
             {
@@ -144,7 +156,18 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty] private AzusaCaptureApp.AppSetting setting;
 
-    
+    public ObservableCollection<CompatibleFormat> AllFormats { get; set; } = new ObservableCollection<CompatibleFormat>();
+    public ObservableCollection<string> AllFormatsStr
+    {
+        get {
+                var c = new ObservableCollection<string>();
+                foreach(var f in AllFormats)
+                {
+                    c.Add(f.formatName);
+            }
+            return c;
+        }
+    }
 
     MemoryStream memStrm = new MemoryStream();
 
@@ -215,7 +238,7 @@ public partial class MainViewModel : ObservableObject
         //mws.Close();
         GetShot();
 
-        CaptureMng.SaveTo(Setting.SaveTo + $"\\{System.DateTime.Now.ToString("YYYY_MM_DD_hh_mm_ss")}.png", memStrm);
+        CaptureMng.SaveTo(Setting.SaveTo + $"\\{System.DateTime.Now.ToString("YYYY_MM_DD_hh_mm_ss")}.png", memStrm, Setting.DefalutFormat);
         var btn = new AppNotificationButton("表示");
         btn.AddArgument("show", "current");
         var notification = new AppNotificationBuilder()
@@ -283,13 +306,23 @@ public partial class MainViewModel : ObservableObject
         savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
         // Dropdown of file types the user can save the file as
         savePicker.FileTypeChoices.Add("PNG画像", new List<string>() { ".png" });
+        savePicker.FileTypeChoices.Add("JPG画像", new List<string>() { ".jpg" });
+        savePicker.FileTypeChoices.Add("AVIF画像", new List<string>() { ".avif" });
+        savePicker.FileTypeChoices.Add("WEBP画像", new List<string>() { ".webp" });
+        savePicker.FileTypeChoices.Add("ビットマップ画像", new List<string>() { ".bmp" });
+        savePicker.FileTypeChoices.Add("HEIC画像", new List<string>() { ".heic" });
 
         var file = await savePicker.PickSaveFileAsync();
 
+
+
+
         Debug.WriteLine(file.Name);
+        Debug.WriteLine(file.FileType);
+
+        CaptureMng.SaveTo(file.Path, memStrm, CaptureMng.Str2Format(file.FileType));
 
 
-        CaptureMng.SaveTo(file.Path, memStrm);
     }
 
     [RelayCommand]
@@ -360,7 +393,7 @@ public partial class MainViewModel : ObservableObject
         {
             case CaptureWay.FullScreen:
                 GetShot();
-                CaptureMng.SaveTo(Setting.SaveTo + $"\\{System.DateTime.Now.ToString("YYYY_MM_DD_hh_mm_ss")}.png", memStrm);
+                CaptureMng.SaveTo(Setting.SaveTo + $"\\{System.DateTime.Now.ToString("YYYY_MM_DD_hh_mm_ss")}.png", memStrm, Setting.DefalutFormat);
                 var btn = new AppNotificationButton("表示");
                 btn.AddArgument("show", "current");
                 var notification = new AppNotificationBuilder()
@@ -438,7 +471,7 @@ public partial class MainViewModel : ObservableObject
     private void Triming(int x, int y, int w, int h)
     {
         CurrentImgSource = CaptureMng.Trim(x,y,w,h, memStrm);
-        CaptureMng.SaveTo(Setting.SaveTo + $"\\{System.DateTime.Now.ToString("YYYY_MM_DD_hh_mm_ss")}.png", memStrm);
+        CaptureMng.SaveTo(Setting.SaveTo + $"\\{System.DateTime.Now.ToString("YYYY_MM_DD_hh_mm_ss")}.png", memStrm, Setting.DefalutFormat);
     }
 
 

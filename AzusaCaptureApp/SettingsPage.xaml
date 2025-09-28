@@ -70,6 +70,21 @@
                     <ToggleSwitch IsOn="{Binding Setting.AutoCopy, Mode=TwoWay}" Grid.Row="0" Grid.Column="2"/>
                 </Grid>
             </Border>
+
+            <Border Padding="10" CornerRadius="10" Background="#2b2b2b" BorderBrush="#DDD">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition Width="80"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" TextAlignment="Left" Text="保存時のフォーマット"/>
+                    <ComboBox Grid.Row="0" Grid.Column="2" SelectedItem="{Binding Setting.DefaultFormat}" ItemsSource="{Binding AllFormatsuu}"/>
+                </Grid>
+            </Border>
         </StackPanel>
     </Grid>
 </Page>

@@ -79,16 +79,9 @@ public static class CaptureMng
     {
         if (ms.Length == 0) return;
 
-        //var fs = new FileStream(path, FileMode.CreateNew);
-
-        //var bmp = new Bitmap(ms);
-        //SaveTo(path, bmp);
-        //ms.Position = 0;
-
-
         SaveTo(path, ms, MagickFormat.Png);
-
     }
+
 
     public static void SaveTo(string path, MemoryStream ms, MagickFormat format)
     {
@@ -105,5 +98,36 @@ public static class CaptureMng
         //msにはpng形式の画像が入ってる
         var bmp = new System.Drawing.Bitmap(ms);
        System.Windows.Forms.Clipboard.SetImage(bmp);
+    }
+
+
+    public static MagickFormat Str2Format(string str)
+    {
+
+        switch (str)
+        {
+            case ".png":
+                return MagickFormat.Png;
+                break;
+            case ".jpg":
+                return MagickFormat.Jpg;
+                break;
+            case ".heic":
+                return MagickFormat.Heic;
+                break;
+            case ".avif":
+                return MagickFormat.Avif;
+                break;
+            case ".webp":
+                return MagickFormat.WebP;
+                break;
+            case ".bmp":
+                return MagickFormat.Bmp;
+                break;
+                
+
+        }
+
+        throw new Exception($"{str}に該当するフォーマットなし");
     }
 }

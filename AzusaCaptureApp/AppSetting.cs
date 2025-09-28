@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.IO.Packaging;
 using Windows.ApplicationModel;
+using ImageMagick;
 
 namespace AzusaCaptureApp;
 
@@ -30,13 +31,14 @@ public partial class AppSetting : ObservableObject
         using var sw = new StreamWriter(Cont.SettingDir + "\\settings.json");
         sw.Write(jsonstr);
 
-        var fullpath = Windows.ApplicationModel.Package.Current.Id;
+        //var fullpath = Windows.ApplicationModel.Package.Current.Id;
     }
 
     [ObservableProperty] public string saveTo;
     [ObservableProperty] public CaptureWay defaultWay;
     [ObservableProperty] public bool autoSave;
     [ObservableProperty] public bool autoCopy;
+    [ObservableProperty] public ImageMagick.MagickFormat defalutFormat;
 }
 
 public enum CaptureWay
@@ -48,4 +50,24 @@ public enum CaptureWay
     OneWindow,
     FullScreenGIF,
     OneWindowGIF
+}
+
+public struct CompatibleFormat
+{
+    public CompatibleFormat(MagickFormat f, string e, string fn)
+    {
+        magickFormat = f;
+        extension = e;
+        formatName = fn;
+    }
+    public MagickFormat magickFormat { get; private set; }
+    public string extension { get; private set; }
+    public string formatName { get; private set; }
+
+
+    public override string ToString()
+    {
+        return formatName;
+    }
+
 }
