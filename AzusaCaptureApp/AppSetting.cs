@@ -38,7 +38,7 @@ public partial class AppSetting : ObservableObject
     [ObservableProperty] public CaptureWay defaultWay;
     [ObservableProperty] public bool autoSave;
     [ObservableProperty] public bool autoCopy;
-    [ObservableProperty] public ImageMagick.MagickFormat defalutFormat;
+    [ObservableProperty] public CompatibleFormat defalutFormat;
 }
 
 public enum CaptureWay

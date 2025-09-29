@@ -82,7 +82,7 @@
                         <ColumnDefinition Width="80"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" TextAlignment="Left" Text="保存時のフォーマット"/>
-                    <ComboBox Grid.Row="0" Grid.Column="2" SelectedItem="{Binding Setting.DefaultFormat}" ItemsSource="{Binding AllFormatsuu}"/>
+                    <ComboBox Grid.Row="0" Grid.Column="2" SelectedItem="{Binding Setting.DefaultFormat}" ItemsSource="{Binding AllFormats}"/>
                 </Grid>
             </Border>
         </StackPanel>

@@ -75,12 +75,6 @@ public static class CaptureMng
         return bitmapiamge;
     }
 
-    public static void SaveTo(string path, MemoryStream ms)
-    {
-        if (ms.Length == 0) return;
-
-        SaveTo(path, ms, MagickFormat.Png);
-    }
 
 
     public static void SaveTo(string path, MemoryStream ms, MagickFormat format)
