@@ -48,7 +48,7 @@ jobs:
 
     # Create the app by building and publishing the project
     - name: Create the app
-      run: msbuild $env:Solution_Name /t:Publish /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:PublishReadyToRun=false
+      run: msbuild $env:Solution_Name /t:Publish /p:Configuration=$env:Configuration /p:Platform=$env:Platform /p:PublishReadyToRun=false /p:SelfContained=true
       env:
         Configuration: ${{ matrix.configuration }}
         Platform: ${{ matrix.platform }}
