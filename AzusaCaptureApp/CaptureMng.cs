@@ -46,15 +46,23 @@ public static class CaptureMng
 
     public static BitmapImage Trim(int x, int y, int w, int h, MemoryStream ms)
     {
-        var bytes = new byte[ms.Length];
-        ms.Position = 0;
-        ms.Read(bytes, 0, (int)ms.Length);
+        return Trim(x, y, w, h, ms, ms);
+    }
+
+    public static BitmapImage Trim(int x, int y, int w, int h, MemoryStream ms, MemoryStream fullSizeBitmap)
+    {
+        //msにはクロップ済みのものが入ってるから、二回目に使っちゃダメ
+        var bytes = new byte[fullSizeBitmap.Length];
+        fullSizeBitmap.Position = 0;
+        fullSizeBitmap.Read(bytes, 0, (int)fullSizeBitmap.Length);
         var img = new MagickImage(bytes);
+        
+        
         img.Crop(new MagickGeometry(x,y,(uint)w,(uint)h));
-        //ms.SetLength(0);
-        //ms.Capacity = 0;
-        //ms.Position = 0;
-        //ms.Write(img.ToByteArray());
+        ms.SetLength(0);
+        ms.Capacity = 0;
+        ms.Position = 0;
+        ms.Write(img.ToByteArray());
 
         return ConvertFromBytes(img.ToByteArray());
     }
@@ -79,6 +87,10 @@ public static class CaptureMng
 
     public static void SaveTo(string path, MemoryStream ms, MagickFormat format)
     {
+        if(format == MagickFormat.Unknown)
+        {
+            format = MagickFormat.Png;
+        }
         ms.Position = 0;
         var img = new MagickImage(ms);
         img.Format = format;

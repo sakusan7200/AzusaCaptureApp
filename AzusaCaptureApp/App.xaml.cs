@@ -51,6 +51,7 @@ namespace AzusaCaptureApp
             Services = sc.BuildServiceProvider();
 
             //キーボードフックの設定
+            //TODO: ms-screenclipへの対応
             var a = new KeyboardAccelerator();
             a.Key = Windows.System.VirtualKey.Snapshot;
             a.Modifiers = Windows.System.VirtualKeyModifiers.Control;

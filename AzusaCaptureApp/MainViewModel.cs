@@ -137,6 +137,7 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private BitmapImage currentImgSource;//スクショされた画像が変わることはないよね
 
     [ObservableProperty] private BitmapImage fullSizeImgSource;
+    private MemoryStream fullSizeImgStream;
 
 
     Point startPoint;
@@ -176,6 +177,10 @@ public partial class MainViewModel : ObservableObject
         //ms = CaptureMng.CaptureFullScreen();
         CurrentImgSource = CaptureMng.CaptureFullScreen(memStrm);
         FullSizeImgSource = CaptureMng.ConvertFrom(memStrm);
+        fullSizeImgStream = new MemoryStream();
+        memStrm.Position = 0;
+        memStrm.CopyTo(fullSizeImgStream);
+
     }
 
     public void ActivationProcess()
@@ -227,12 +232,13 @@ public partial class MainViewModel : ObservableObject
         CaptureMng.SaveTo(Setting.SaveTo + $"\\{System.DateTime.Now.ToString("YYYY_MM_DD_hh_mm_ss")}.png", memStrm, Setting.DefalutFormat.magickFormat);
         var btn = new AppNotificationButton("表示");
         btn.AddArgument("show", "current");
-        var notification = new AppNotificationBuilder()
-    .AddText(Cont.AppName)
-    .AddText($"スクリーンショットを\n{System.DateTime.Now.ToString("YYYY_MM_DD_hh_mm_ss")}.png\nとして保存し、クリップボードにコピーしました。")
-    .AddButton(btn)
-    .BuildNotification();
-        AppNotificationManager.Default.Show(notification);
+        // TODO: com exception 要素が見つかりません
+    //    var notification = new AppNotificationBuilder()
+    //.AddText(Cont.AppName)
+    //.AddText($"スクリーンショットを\n{System.DateTime.Now.ToString("YYYY_MM_DD_hh_mm_ss")}.png\nとして保存し、クリップボードにコピーしました。")
+    //.AddButton(btn)
+    //.BuildNotification();
+    //    AppNotificationManager.Default.Show(notification);
 
         mws.MoveToMainWindow();
         
@@ -245,7 +251,9 @@ public partial class MainViewModel : ObservableObject
     private void FinishTrim()
     {
         var rect = mws.FinishTrim();
-        CurrentImgSource = CaptureMng.Trim((int)Canvas.GetLeft(rect), (int)Canvas.GetTop(rect), (int)rect.Width, (int)rect.Height, memStrm);
+        CurrentImgSource = CaptureMng.Trim((int)Canvas.GetLeft(rect), (int)Canvas.GetTop(rect),
+            (int)rect.Width, (int)rect.Height,
+            memStrm, fullSizeImgStream);
         
     }
 
