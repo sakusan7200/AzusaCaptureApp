@@ -61,6 +61,8 @@ public partial class MainViewModel : ObservableObject
             new CompatibleFormat(MagickFormat.Jpg, "jpg", "JPG画像"),
         };
 
+        //標準ではエリアキャプチャ、設定で変更可能にする予定
+        AreaCapChecked = true;
     }
 
     private void MainViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -160,21 +162,20 @@ public partial class MainViewModel : ObservableObject
 
     private CaptureWay WhatWay()
     {
-        if (fullScrChecked) return CaptureWay.FullScreen;
-        if (areaCapChecked) return CaptureWay.AreaCapture;
-        if (freeHandChecked) return CaptureWay.FreeHand;
-        if (fullScrChecked) return CaptureWay.OneWindow;
-        if (windowChecked) return CaptureWay.FullScreen;
-        if (fullScrGIFChecked) return CaptureWay.FullScreenGIF;
-        if (windowGIFChecked) return CaptureWay.OneWindow;
+        if (FullScrChecked) return CaptureWay.FullScreen;
+        if (AreaCapChecked) return CaptureWay.AreaCapture;
+        if (FreeHandChecked) return CaptureWay.FreeHand;
+        if (FullScrChecked) return CaptureWay.OneWindow;
+        if (WindowChecked) return CaptureWay.FullScreen;
+        if (FullScrGIFChecked) return CaptureWay.FullScreenGIF;
+        if (WindowGIFChecked) return CaptureWay.OneWindow;
         return CaptureWay.Nodefinded;
     }
 
     //[RelayCommand]
-    //暫定措置
+    //フルスクリーンでキャプチャし、メモリーストリームとImgSourceに保存する
     public void GetShot()
     {
-        //ms = CaptureMng.CaptureFullScreen();
         CurrentImgSource = CaptureMng.CaptureFullScreen(memStrm);
         FullSizeImgSource = CaptureMng.ConvertFrom(memStrm);
         fullSizeImgStream = new MemoryStream();
@@ -299,14 +300,13 @@ public partial class MainViewModel : ObservableObject
         // Set options for your file picker
         savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
         // Dropdown of file types the user can save the file as
-        // TODO: ここをAllFormatsから
-        savePicker.FileTypeChoices.Add("PNG画像", new List<string>() { ".png" });
-        savePicker.FileTypeChoices.Add("JPG画像", new List<string>() { ".jpg" });
-        savePicker.FileTypeChoices.Add("AVIF画像", new List<string>() { ".avif" });
-        savePicker.FileTypeChoices.Add("WEBP画像", new List<string>() { ".webp" });
-        savePicker.FileTypeChoices.Add("ビットマップ画像", new List<string>() { ".bmp" });
-        savePicker.FileTypeChoices.Add("HEIC画像", new List<string>() { ".heic" });
 
+        savePicker.FileTypeChoices.Clear();
+        foreach (var f in AllFormats)
+        {
+            //Debug.WriteLine(f.formatName + " " + f.extension);
+            savePicker.FileTypeChoices.Add(f.formatName, new List<string>() { "." + f.extension });
+        }
         var file = await savePicker.PickSaveFileAsync();
 
 
@@ -454,13 +454,13 @@ public partial class MainViewModel : ObservableObject
         var btn = new AppNotificationButton("表示");
         btn.AddArgument("show", "current");
 
-        var notification = new AppNotificationBuilder()
-    .AddText(Cont.AppName)
-    .AddText($"スクリーンショットを\n{System.DateTime.Now.ToString("YYYY_MM_DD_hh_mm_ss")}.png\nとして保存し、クリップボードにコピーしました。")
-    .AddButton(btn)
-    .BuildNotification();
+    //    var notification = new AppNotificationBuilder()
+    //.AddText(Cont.AppName)
+    //.AddText($"スクリーンショットを\n{System.DateTime.Now.ToString("YYYY_MM_DD_hh_mm_ss")}.png\nとして保存し、クリップボードにコピーしました。")
+    //.AddButton(btn)
+    //.BuildNotification();
 
-        AppNotificationManager.Default.Show(notification);
+    //    AppNotificationManager.Default.Show(notification);
     }
 
     private void Triming(int x, int y, int w, int h)

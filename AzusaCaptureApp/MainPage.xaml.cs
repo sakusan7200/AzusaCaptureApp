@@ -126,6 +126,8 @@ public sealed partial class MainPage : Page
             }
 
         };
+
+        
     }
 
     private void ImgSizeChanged(object sender, SizeChangedEventArgs args)
@@ -205,8 +207,6 @@ public sealed partial class MainPage : Page
         trimCmdBar.Visibility = Visibility.Visible;
         fullSizeImg.Visibility = Visibility.Visible;
         img.Visibility = Visibility.Collapsed;
-        //ImgSizeChanged(null, )
-        //selectionAreaRectangle.Width = 
     }
 
     public Microsoft.UI.Xaml.Shapes.Rectangle DoneTriming()

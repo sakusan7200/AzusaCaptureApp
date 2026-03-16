@@ -62,12 +62,18 @@
                     <Image x:Name="fullSizeImg" Source="{Binding FullSizeImgSource}" Visibility="Collapsed" AutomationProperties.Name="cliff" Stretch="None"
            HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <Canvas Visibility="Collapsed" x:Name="cnv" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        
+                        <!--指-->
                         <Thumb x:Name="TopLeftThumb" Canvas.ZIndex="10" Width="10" Height="10" Background="Blue"/>
                         <Thumb x:Name="TopRightThumb" Canvas.ZIndex="10" Width="10" Height="10" Background="Blue"/>
                         <Thumb x:Name="BottomLeftThumb" Canvas.ZIndex="10" Width="10" Height="10" Background="Blue"/>
                         <Thumb x:Name="BottomRightThumb" Canvas.ZIndex="10" Width="10" Height="10" Background="Blue"/>
+
+
+                        <!--選択範囲を示す四角形-->
                         <Rectangle x:Name="selectionAreaRectangle" Canvas.ZIndex="1" Stroke="Aqua" StrokeThickness="6" Fill="Transparent" Opacity="1" Canvas.Left="0" Canvas.Top="0" />
 
+                        <!--選択範囲外の部分-->
                         <Rectangle x:Name="LeftOverlay" Canvas.ZIndex="1" Opacity="0.7" Fill="Black" Canvas.Left="0" Canvas.Top="0" />
                         <Rectangle x:Name="RightOverlay" Canvas.ZIndex="1" Opacity="0.7" Fill="Black" Canvas.Left="0" Canvas.Top="0" />
                         <Rectangle x:Name="TopOverlay" Canvas.ZIndex="1" Opacity="0.7" Fill="Black" Canvas.Left="0" Canvas.Top="0" />
