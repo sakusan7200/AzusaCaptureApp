@@ -220,4 +220,9 @@ public sealed partial class MainPage : Page
 
         return selectionAreaRectangle;
     }
+
+    private void Polygon_DragEnter(object sender, DragEventArgs e)
+    {
+
+    }
 }

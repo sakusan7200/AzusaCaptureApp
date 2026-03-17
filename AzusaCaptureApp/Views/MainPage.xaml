@@ -10,6 +10,25 @@
     mc:Ignorable="d">
 
     <Grid>
+        <Grid.Resources>
+            <Style x:Key="TopLeft" TargetType="Thumb">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Thumb">
+                            <Grid>
+                                <Polygon 
+                                Points="-7,-7 5,-7 5,-5 -5,-5 -5,5 -7,5" 
+                                Fill="SkyBlue" 
+                                StrokeThickness="2" />
+                                <Polygon Points="-7,-7 5,-7 5,7 -7,7" Fill="Transparent"/>
+
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Grid.Resources>
+        
         <tb:TaskbarIcon x:Name="taskbaricon" ToolTipText="AzusaCaptureApp">
             <tb:TaskbarIcon.IconSource>
                 <tb:GeneratedIconSource Text="🖼️" Foreground="Red"/>
@@ -64,11 +83,12 @@
                     <Canvas Visibility="Collapsed" x:Name="cnv" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center">
                         
                         <!--指-->
-                        <Thumb x:Name="TopLeftThumb" Canvas.ZIndex="10" Width="10" Height="10" Background="Blue"/>
-                        <Thumb x:Name="TopRightThumb" Canvas.ZIndex="10" Width="10" Height="10" Background="Blue"/>
-                        <Thumb x:Name="BottomLeftThumb" Canvas.ZIndex="10" Width="10" Height="10" Background="Blue"/>
-                        <Thumb x:Name="BottomRightThumb" Canvas.ZIndex="10" Width="10" Height="10" Background="Blue"/>
+                        <Thumb x:Name="TopLeftThumb" Style="{StaticResource TopLeft}" Canvas.ZIndex="10" Width="20" Height="20" Background="Gray"/>
+                        <Thumb x:Name="TopRightThumb" Canvas.ZIndex="10" Width="20" Height="20" Background="Gray"/>
+                        <Thumb x:Name="BottomLeftThumb" Canvas.ZIndex="10" Width="20" Height="20" Background="Gray"/>
+                        <Thumb x:Name="BottomRightThumb" Canvas.ZIndex="10" Width="20" Height="20" Background="Gray"/>
 
+                        <Polygon DragEnter="Polygon_DragEnter"/>
 
                         <!--選択範囲を示す四角形-->
                         <Rectangle x:Name="selectionAreaRectangle" Canvas.ZIndex="1" Stroke="Aqua" StrokeThickness="6" Fill="Transparent" Opacity="1" Canvas.Left="0" Canvas.Top="0" />

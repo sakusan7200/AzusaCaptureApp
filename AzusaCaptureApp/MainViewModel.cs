@@ -1,5 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using ImageMagick;
+using Microsoft.Toolkit.Uwp.Notifications;
 using Microsoft.UI.Xaml.Controls;
 using Microsoft.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Media.Imaging;
@@ -8,17 +10,16 @@ using Microsoft.Windows.AppNotifications.Builder;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.Storage.AccessCache;
 using Windows.Storage.Pickers;
-using Windows.Foundation;
 //using System.Windows.Media.Imaging;
 using Point = Windows.Foundation.Point;
 using Rectangle = Microsoft.UI.Xaml.Shapes.Rectangle;
-using ImageMagick;
-using System.Collections.ObjectModel;
 
 namespace AzusaCaptureApp;
 
@@ -59,6 +60,9 @@ public partial class MainViewModel : ObservableObject
         { 
             new CompatibleFormat(MagickFormat.Png, "png", "PNG画像"),
             new CompatibleFormat(MagickFormat.Jpg, "jpg", "JPG画像"),
+            new CompatibleFormat(MagickFormat.Avif, "avif", "AVIF画像"),
+            new CompatibleFormat(MagickFormat.Heic, "heic", "HEIC画像"),
+
         };
 
         //標準ではエリアキャプチャ、設定で変更可能にする予定
@@ -139,8 +143,11 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private BitmapImage currentImgSource;//スクショされた画像が変わることはないよね
 
     [ObservableProperty] private BitmapImage fullSizeImgSource;
-    private MemoryStream fullSizeImgStream;
+    private MemoryStream fullSizeImgStream { get; set; }
 
+
+    [ObservableProperty] private (BitmapImage imgSource, MemoryStream ms) fullSizeData;
+    [ObservableProperty] private (BitmapImage imgSource, MemoryStream ms) trimmedData;
 
     Point startPoint;
     Rectangle selectionRect;
@@ -158,7 +165,7 @@ public partial class MainViewModel : ObservableObject
 
     public ObservableCollection<CompatibleFormat> AllFormats { get; set; } = new ObservableCollection<CompatibleFormat>();
 
-    MemoryStream memStrm = new MemoryStream();
+    MemoryStream memStrm { get; set; } = new MemoryStream();
 
     private CaptureWay WhatWay()
     {
@@ -199,9 +206,9 @@ public partial class MainViewModel : ObservableObject
 
 
     [RelayCommand]
-    private void StartTrim()
+    private void StartTriming()
     {
-        mws.StartTrim();
+        mws.StartTriming();
     }
 
     [RelayCommand]
@@ -230,16 +237,25 @@ public partial class MainViewModel : ObservableObject
         //mws.Close();
         GetShot();
 
-        CaptureMng.SaveTo(Setting.SaveTo + $"\\{System.DateTime.Now.ToString("YYYY_MM_DD_hh_mm_ss")}.png", memStrm, Setting.DefalutFormat.magickFormat);
+        var f_name = setting.GetFilenameFromFormat();
+
+        CaptureMng.SaveTo(Setting.SaveTo + $"\\{f_name}.png", memStrm, Setting.DefalutFormat.magickFormat);
         var btn = new AppNotificationButton("表示");
         btn.AddArgument("show", "current");
         // TODO: com exception 要素が見つかりません
-    //    var notification = new AppNotificationBuilder()
-    //.AddText(Cont.AppName)
-    //.AddText($"スクリーンショットを\n{System.DateTime.Now.ToString("YYYY_MM_DD_hh_mm_ss")}.png\nとして保存し、クリップボードにコピーしました。")
-    //.AddButton(btn)
-    //.BuildNotification();
-    //    AppNotificationManager.Default.Show(notification);
+
+
+        new ToastContentBuilder()
+        .AddText($"スクリーンショットを\n{f_name}.png\nとして保存し、クリップボードにコピーしました。")
+        .AddButton(
+            new ToastButton()
+            .SetContent("Reply")
+            .AddArgument("action", "reply")
+            .SetBackgroundActivation()
+        )
+        .Show();
+
+
 
         mws.MoveToMainWindow();
         
@@ -258,67 +274,6 @@ public partial class MainViewModel : ObservableObject
         
     }
 
-    [RelayCommand]
-    private async void StartCapture2()
-    {
-        CaptureMng.Init(Setting.SaveTo, memStrm);
-        mws.Minimaize();
-
-        //TODO: おかしい
-        await Task.Delay(600);
-        //mws.Close();
-        GetShot();
-        App.ShowCaptureWindow();
-    }
-
-    [RelayCommand]
-    private async void CaptureRightNow()
-    {
-        CaptureMng.Init(Setting.SaveTo, memStrm);
-        mws.Minimaize();
-        //mws.Close();
-        GetShot();
-
-        mws.MoveToMainWindow();
-    }
-
-    [RelayCommand]
-    private async Task SaveTo()
-    {
-        // Create a file picker
-        var savePicker = new FileSavePicker();
-
-        // See the sample code below for how to make the window accessible from the App class.
-        var window = App.CurrentMainWindow;
-
-        // Retrieve the window handle (HWND) of the current WinUI 3 window.
-        var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
-
-        // Initialize the file picker with the window handle (HWND).
-        WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hWnd);
-
-        // Set options for your file picker
-        savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-        // Dropdown of file types the user can save the file as
-
-        savePicker.FileTypeChoices.Clear();
-        foreach (var f in AllFormats)
-        {
-            //Debug.WriteLine(f.formatName + " " + f.extension);
-            savePicker.FileTypeChoices.Add(f.formatName, new List<string>() { "." + f.extension });
-        }
-        var file = await savePicker.PickSaveFileAsync();
-
-
-
-
-        Debug.WriteLine(file.Name);
-        Debug.WriteLine(file.FileType);
-
-        CaptureMng.SaveTo(file.Path, memStrm, CaptureMng.Str2Format(file.FileType));
-
-
-    }
 
     [RelayCommand]
     private void SetClipboard()
@@ -376,26 +331,89 @@ public partial class MainViewModel : ObservableObject
         {
             //PickFolderOutputTextBlock.Text = "Operation cancelled.";
         }
+    }
 
-        //re-enable the button
-        //senderButton.IsEnabled = true;
+    [RelayCommand]
+    private async void StartCapture2()
+    {
+        CaptureMng.Init(Setting.SaveTo, memStrm);
+        mws.Minimaize();
+
+        //TODO: おかしい
+        await Task.Delay(600);
+        //mws.Close();
+        GetShot();
+        App.ShowCaptureWindow();
+    }
+
+    [RelayCommand]
+    private async void CaptureRightNow()
+    {
+        CaptureMng.Init(Setting.SaveTo, memStrm);
+        mws.Minimaize();
+        //mws.Close();
+        GetShot();
+
+        mws.MoveToMainWindow();
+    }
+
+
+    [RelayCommand]
+    private async Task SaveTo()
+    {
+        // Create a file picker
+        var savePicker = new FileSavePicker();
+
+        // See the sample code below for how to make the window accessible from the App class.
+        var window = App.CurrentMainWindow;
+
+        // Retrieve the window handle (HWND) of the current WinUI 3 window.
+        var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
+
+        // Initialize the file picker with the window handle (HWND).
+        WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hWnd);
+
+        // Set options for your file picker
+        savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+        // Dropdown of file types the user can save the file as
+
+        savePicker.FileTypeChoices.Clear();
+        foreach (var f in AllFormats)
+        {
+            //Debug.WriteLine(f.formatName + " " + f.extension);
+            savePicker.FileTypeChoices.Add(f.formatName, new List<string>() { "." + f.extension });
+        }
+        var file = await savePicker.PickSaveFileAsync();
+
+
+
+
+        Debug.WriteLine(file.Name);
+        Debug.WriteLine(file.FileType);
+
+        //TODO:
+        CaptureMng.SaveTo(file.Path, memStrm, MagickFormat.Png);
+
 
     }
-    
+
     public void CursorPressed(Point position)
     {
+        var f_name = setting.GetFilenameFromFormat();
         switch (WhatWay())
         {
             case CaptureWay.FullScreen:
                 GetShot();
-                CaptureMng.SaveTo(Setting.SaveTo + $"\\{System.DateTime.Now.ToString("YYYY_MM_DD_hh_mm_ss")}.png", memStrm, Setting.DefalutFormat.magickFormat);
+                CaptureMng.SaveTo(Setting.SaveTo + $"\\{f_name}.png", memStrm, Setting.DefalutFormat.magickFormat);
+                
                 var btn = new AppNotificationButton("表示");
                 btn.AddArgument("show", "current");
                 var notification = new AppNotificationBuilder()
-            .AddText(Cont.AppName)
-            .AddText($"スクリーンショットを\n{System.DateTime.Now.ToString("YYYY_MM_DD_hh_mm_ss")}.png\nとして保存し、クリップボードにコピーしました。")
-            .AddButton(btn)
-            .BuildNotification();
+                    .AddText(Cont.AppName)
+                    .AddText($"スクリーンショットを\n{f_name}.png\nとして保存し、クリップボードにコピーしました。")
+                    .AddButton(btn)
+                    .BuildNotification();
+
                 cws.MoveToMainWindow();
                 cws.Close();
                 break;
@@ -442,7 +460,7 @@ public partial class MainViewModel : ObservableObject
         //トリミング
         //var srcrect = new System.Drawing.Rectangle(x,y,width,height);
 
-        Triming(x,y,width,height);
+        DoTrim(x,y,width,height);
 
         cws.MoveToMainWindow();
         cws.Close();
@@ -454,25 +472,11 @@ public partial class MainViewModel : ObservableObject
         var btn = new AppNotificationButton("表示");
         btn.AddArgument("show", "current");
 
-    //    var notification = new AppNotificationBuilder()
-    //.AddText(Cont.AppName)
-    //.AddText($"スクリーンショットを\n{System.DateTime.Now.ToString("YYYY_MM_DD_hh_mm_ss")}.png\nとして保存し、クリップボードにコピーしました。")
-    //.AddButton(btn)
-    //.BuildNotification();
-
-    //    AppNotificationManager.Default.Show(notification);
     }
 
-    private void Triming(int x, int y, int w, int h)
+    private void DoTrim(int x, int y, int w, int h)
     {
         CurrentImgSource = CaptureMng.Trim(x,y,w,h, memStrm);
-        CaptureMng.SaveTo(Setting.SaveTo + $"\\{System.DateTime.Now.ToString("YYYY_MM_DD_hh_mm_ss")}.png", memStrm, Setting.DefalutFormat.magickFormat);
-    }
-
-
-    [RelayCommand]
-    private void FullScreenCap()
-    {
-
+        CaptureMng.SaveTo(Setting.SaveTo + $"\\{setting.GetFilenameFromFormat()}.png", memStrm, Setting.DefalutFormat.magickFormat);
     }
 }

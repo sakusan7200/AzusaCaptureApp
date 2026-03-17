@@ -56,7 +56,7 @@ public class MainWindowService : IMainWindowService
         return App.CurrentMainWindow.Visible;
     }
 
-    public void StartTrim()
+    public void StartTriming()
     {
         MainPage.Singleton.StartTriming();
         
@@ -78,6 +78,6 @@ public interface IMainWindowService
     public void OpenSettingPage();
     public void MoveToMainWindow();
     public bool IsActive();
-    public void StartTrim();
+    public void StartTriming();
     public Rectangle FinishTrim();
 }

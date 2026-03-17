@@ -39,6 +39,11 @@ public partial class AppSetting : ObservableObject
     [ObservableProperty] public bool autoSave;
     [ObservableProperty] public bool autoCopy;
     [ObservableProperty] public CompatibleFormat defalutFormat;
+
+    public string GetFilenameFromFormat()
+    {
+        return DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss");
+    }
 }
 
 public enum CaptureWay

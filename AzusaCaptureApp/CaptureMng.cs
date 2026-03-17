@@ -105,35 +105,4 @@ public static class CaptureMng
         var bmp = new System.Drawing.Bitmap(ms);
        System.Windows.Forms.Clipboard.SetImage(bmp);
     }
-
-
-    public static MagickFormat Str2Format(string str)
-    {
-
-        switch (str)
-        {
-            case ".png":
-                return MagickFormat.Png;
-                break;
-            case ".jpg":
-                return MagickFormat.Jpg;
-                break;
-            case ".heic":
-                return MagickFormat.Heic;
-                break;
-            case ".avif":
-                return MagickFormat.Avif;
-                break;
-            case ".webp":
-                return MagickFormat.WebP;
-                break;
-            case ".bmp":
-                return MagickFormat.Bmp;
-                break;
-                
-
-        }
-
-        throw new Exception($"{str}に該当するフォーマットなし");
-    }
 }
