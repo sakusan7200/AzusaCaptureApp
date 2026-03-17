@@ -19,7 +19,7 @@
             PointerPressed="cnv_PointerPressed"
             PointerReleased="cnv_PointerReleased">
             <Image x:Name="img" 
-               Source="{Binding CurrentImgSource}"
+               Source="{Binding CurrentImg2}"
                IsHitTestVisible="False"/>
         </Canvas>
         <!--アニメーションpngがあるんだとか-->

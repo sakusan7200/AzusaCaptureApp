@@ -44,18 +44,18 @@
         </tb:TaskbarIcon>
         <Grid x:Name="mainContent">
             <Grid.RowDefinitions>
-                <RowDefinition Height="40px"/>
+                <RowDefinition Height="43px"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <CommandBar x:Name="cmdBar" Grid.Row="0" Grid.Column="0" Background="Transparent" IsOpen="False" DefaultLabelPosition="Right">
-                <AppBarButton Icon="Save" Command="{Binding SaveToCommand}" Label="保存"/>
-                <AppBarButton Icon="Copy" Command="{Binding SetClipboardCommand}" Label="コピー"/>
-                <AppBarButton Icon="OpenWith" Command="{Binding OpenInAnotherAppCommand}" Label="ほかのプログラムで開く"/>
-                <AppBarButton Icon="Trim" Command="{Binding StartTrimingCommand}" Label="トリミング"/>
+            <CommandBar x:Name="cmdBar" Grid.Row="0" Grid.Column="0" IsSticky="True" IsOpen="False" DefaultLabelPosition="Right">
+                <AppBarButton Icon="Save" IsEnabled="{Binding IsDataNonNull}" Command="{Binding SaveToCommand}" Label="保存"/>
+                <AppBarButton Icon="Copy" IsEnabled="{Binding IsDataNonNull}" Command="{Binding SetClipboardCommand}" Label="コピー"/>
+                <AppBarButton Icon="OpenWith" IsEnabled="{Binding IsDataNonNull}" Command="{Binding OpenInAnotherAppCommand}" Label="ほかのプログラムで開く"/>
+                <AppBarButton Icon="Trim" IsEnabled="{Binding IsDataNonNull}" Command="{Binding StartTrimingCommand}" Label="トリミング"/>
                 <AppBarSeparator/>
                 <AppBarButton Icon="Add" Label="すぐキャプチャ" Command="{Binding StartCaptureCommand}"/>
                 <AppBarButton Icon="Add" Label="キャプチャ2" Command="{Binding StartCapture2Command}"/>
@@ -74,7 +74,7 @@
                     <SolidColorBrush Color="#2d2c2c"/>
                 </ScrollViewer.Background>
                 <Grid x:Name="imgContent">
-                    <Image x:Name="img" Source="{Binding CurrentImgSource}" AutomationProperties.Name="cliff" Stretch="None"
+                    <Image x:Name="img" Source="{Binding CurrentImg2}" AutomationProperties.Name="cliff" Stretch="None"
            HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
 

@@ -67,7 +67,16 @@ public partial class MainViewModel : ObservableObject
 
         //標準ではエリアキャプチャ、設定で変更可能にする予定
         AreaCapChecked = true;
+
+        PropertyChanged += (_, e) =>
+        {
+            if (e.PropertyName == nameof(CurrentImg2))
+            {
+                OnPropertyChanged(nameof(IsDataNonNull));
+            }
+        };
     }
+
 
     private void MainViewModel_PropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
     {
@@ -140,13 +149,6 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    [ObservableProperty] private BitmapImage currentImgSource;//スクショされた画像が変わることはないよね
-    private MemoryStream currentMemStrm { get; set; } = new();
-
-    //[ObservableProperty] private BitmapImage fullSizeImgSource;
-    //private MemoryStream fullSizeMemStream { get; set; } = new();
-    //[ObservableProperty] private BitmapImage fullsizeImg;
-
     private BIandMS current = new();
     public BitmapImage CurrentImg2
     {
@@ -172,6 +174,11 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty] private AzusaCaptureApp.AppSetting setting;
 
+    public bool IsDataNonNull
+    {
+        get => CurrentImg2 != null;
+    }
+
     public ObservableCollection<CompatibleFormat> AllFormats { get; set; } = new ObservableCollection<CompatibleFormat>();
 
 
@@ -191,12 +198,14 @@ public partial class MainViewModel : ObservableObject
     //フルスクリーンでキャプチャし、メモリーストリームとImgSourceに保存する
     public void GetShot()
     {
-        CurrentImgSource = CaptureMng.CaptureFullScreen(currentMemStrm);
-        fullsize.Set(new MemoryStream(), CaptureMng.ConvertFrom(currentMemStrm));   
+        current.Set(current.ms, CaptureMng.CaptureFullScreen(current.ms));
+        //CurrentImgSource = CaptureMng.CaptureFullScreen(current.ms);
+        fullsize.Set(new MemoryStream(), CaptureMng.ConvertFrom(current.ms));   
         OnPropertyChanged(nameof(FullSizeImg2));
+        OnPropertyChanged(nameof(CurrentImg2));
 
-        currentMemStrm.Position = 0;
-        currentMemStrm.CopyTo(fullsize.ms);
+        current.ms.Position = 0;
+        current.ms.CopyTo(fullsize.ms);
 
     }
 
@@ -241,14 +250,14 @@ public partial class MainViewModel : ObservableObject
             //TODO: おかしい
             await Task.Delay(600);
         }
-        CaptureMng.Init(Setting.SaveTo, currentMemStrm);
+        CaptureMng.Init(Setting.SaveTo, current.ms);
 
         //mws.Close();
         GetShot();
 
         var f_name = setting.GetFilenameFromFormat();
 
-        CaptureMng.SaveTo(Setting.SaveTo + $"\\{f_name}.png", currentMemStrm, Setting.DefalutFormat.magickFormat);
+        CaptureMng.SaveTo(Setting.SaveTo + $"\\{f_name}.png", current.ms, Setting.DefalutFormat.magickFormat);
         var btn = new AppNotificationButton("表示");
         btn.AddArgument("show", "current");
         // TODO: com exception 要素が見つかりません
@@ -267,9 +276,6 @@ public partial class MainViewModel : ObservableObject
 
 
         mws.MoveToMainWindow();
-        
-        //App.ShowCaptureWindow();
-        //cws.GoFullScr();
     }
 
 
@@ -277,17 +283,19 @@ public partial class MainViewModel : ObservableObject
     private void FinishTrim()
     {
         var rect = mws.FinishTrim();
-        CurrentImgSource = CaptureMng.Trim((int)Canvas.GetLeft(rect), (int)Canvas.GetTop(rect),
+        var img = CaptureMng.Trim((int)Canvas.GetLeft(rect), (int)Canvas.GetTop(rect),
             (int)rect.Width, (int)rect.Height,
-            currentMemStrm, fullsize.ms);
-        
+            current.ms, fullsize.ms);
+
+        current.Set(current.ms, img);
+        OnPropertyChanged(nameof(CurrentImg2));
     }
 
 
     [RelayCommand]
     private void SetClipboard()
     {
-        CaptureMng.SetCipboard(currentMemStrm);
+        CaptureMng.SetCipboard(current.ms);
     }
 
     [RelayCommand]
@@ -345,7 +353,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async void StartCapture2()
     {
-        CaptureMng.Init(Setting.SaveTo, currentMemStrm);
+        CaptureMng.Init(Setting.SaveTo, current.ms);
         mws.Minimaize();
 
         //TODO: おかしい
@@ -358,7 +366,7 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async void CaptureRightNow()
     {
-        CaptureMng.Init(Setting.SaveTo, currentMemStrm);
+        CaptureMng.Init(Setting.SaveTo, current.ms);
         mws.Minimaize();
         //mws.Close();
         GetShot();
@@ -401,7 +409,7 @@ public partial class MainViewModel : ObservableObject
         Debug.WriteLine(file.FileType);
 
         //TODO:
-        CaptureMng.SaveTo(file.Path, currentMemStrm, MagickFormat.Png);
+        CaptureMng.SaveTo(file.Path, current.ms, MagickFormat.Png);
 
 
     }
@@ -413,7 +421,7 @@ public partial class MainViewModel : ObservableObject
         {
             case CaptureWay.FullScreen:
                 GetShot();
-                CaptureMng.SaveTo(Setting.SaveTo + $"\\{f_name}.png", currentMemStrm, Setting.DefalutFormat.magickFormat);
+                CaptureMng.SaveTo(Setting.SaveTo + $"\\{f_name}.png", current.ms, Setting.DefalutFormat.magickFormat);
                 
                 var btn = new AppNotificationButton("表示");
                 btn.AddArgument("show", "current");
@@ -485,7 +493,8 @@ public partial class MainViewModel : ObservableObject
 
     private void DoTrim(int x, int y, int w, int h)
     {
-        CurrentImgSource = CaptureMng.Trim(x,y,w,h, currentMemStrm);
-        CaptureMng.SaveTo(Setting.SaveTo + $"\\{setting.GetFilenameFromFormat()}.png", currentMemStrm, Setting.DefalutFormat.magickFormat);
+        current.Set(current.ms, CaptureMng.Trim(x, y, w, h, current.ms));
+        OnPropertyChanged(nameof(CurrentImg2));
+        CaptureMng.SaveTo(Setting.SaveTo + $"\\{setting.GetFilenameFromFormat()}.png", current.ms, Setting.DefalutFormat.magickFormat);
     }
 }
