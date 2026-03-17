@@ -55,7 +55,7 @@
                 <AppBarButton Icon="Save" Command="{Binding SaveToCommand}" Label="保存"/>
                 <AppBarButton Icon="Copy" Command="{Binding SetClipboardCommand}" Label="コピー"/>
                 <AppBarButton Icon="OpenWith" Command="{Binding OpenInAnotherAppCommand}" Label="ほかのプログラムで開く"/>
-                <AppBarButton Icon="Trim" Command="{Binding StartTrimCommand}" Label="トリミング"/>
+                <AppBarButton Icon="Trim" Command="{Binding StartTrimingCommand}" Label="トリミング"/>
                 <AppBarSeparator/>
                 <AppBarButton Icon="Add" Label="すぐキャプチャ" Command="{Binding StartCaptureCommand}"/>
                 <AppBarButton Icon="Add" Label="キャプチャ2" Command="{Binding StartCapture2Command}"/>
@@ -78,7 +78,7 @@
            HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
 
-                    <Image x:Name="fullSizeImg" Source="{Binding FullSizeImgSource}" Visibility="Collapsed" AutomationProperties.Name="cliff" Stretch="None"
+                    <Image x:Name="fullSizeImg" Source="{Binding FullSizeImg2}" Visibility="Collapsed" AutomationProperties.Name="cliff" Stretch="None"
            HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <Canvas Visibility="Collapsed" x:Name="cnv" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center">
                         
