@@ -220,6 +220,8 @@ public sealed partial class MainPage : Page
         //img.Visibility = Visibility.Visible;
         zoomView.Visibility = Visibility.Collapsed;
 
+        scrollViewer.ChangeView(zoomView.HorizontalOffset, zoomView.VerticalOffset, scrollViewer.ZoomFactor);
+
 
         return zoomView.GetRect();
     }
