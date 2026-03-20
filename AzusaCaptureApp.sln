@@ -1,11 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36121.58 d17.14
+VisualStudioVersion = 17.14.36121.58
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzusaCaptureApp", "AzusaCaptureApp\AzusaCaptureApp.csproj", "{EC5F3544-025D-476E-8759-DA97435F1E4D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WinFormsLibrary1", "WinFormsLibrary1\WinFormsLibrary1.csproj", "{E5C9AEBD-646C-4867-8462-ABBE473D8F82}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZoomViewMauiDev", "..\ZoomViewMauiDev\ZoomViewMauiDev\ZoomViewMauiDev.csproj", "{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,18 @@ Global
 		{E5C9AEBD-646C-4867-8462-ABBE473D8F82}.Release|x64.Build.0 = Release|Any CPU
 		{E5C9AEBD-646C-4867-8462-ABBE473D8F82}.Release|x86.ActiveCfg = Release|Any CPU
 		{E5C9AEBD-646C-4867-8462-ABBE473D8F82}.Release|x86.Build.0 = Release|Any CPU
+		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Debug|x64.Build.0 = Debug|Any CPU
+		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Debug|x86.Build.0 = Debug|Any CPU
+		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Release|ARM64.Build.0 = Release|Any CPU
+		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Release|x64.ActiveCfg = Release|Any CPU
+		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Release|x64.Build.0 = Release|Any CPU
+		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Release|x86.ActiveCfg = Release|Any CPU
+		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

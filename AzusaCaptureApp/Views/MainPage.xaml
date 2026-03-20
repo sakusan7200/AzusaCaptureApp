@@ -7,6 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:tb="using:H.NotifyIcon"
+    xmlns:zoom="using:ZoomViewMauiDev"
     mc:Ignorable="d">
 
     <Grid>
@@ -42,6 +43,8 @@
                 </MenuFlyout>
             </tb:TaskbarIcon.ContextFlyout>
         </tb:TaskbarIcon>
+        
+        
         <Grid x:Name="mainContent">
             <Grid.RowDefinitions>
                 <RowDefinition Height="43px"/>
@@ -51,58 +54,28 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <CommandBar x:Name="cmdBar" Grid.Row="0" Grid.Column="0" IsSticky="True" IsOpen="False" DefaultLabelPosition="Right">
-                <AppBarButton Icon="Save" IsEnabled="{Binding IsDataNonNull}" Command="{Binding SaveToCommand}" Label="保存"/>
-                <AppBarButton Icon="Copy" IsEnabled="{Binding IsDataNonNull}" Command="{Binding SetClipboardCommand}" Label="コピー"/>
-                <AppBarButton Icon="OpenWith" IsEnabled="{Binding IsDataNonNull}" Command="{Binding OpenInAnotherAppCommand}" Label="ほかのプログラムで開く"/>
-                <AppBarButton Icon="Trim" IsEnabled="{Binding IsDataNonNull}" Command="{Binding StartTrimingCommand}" Label="トリミング"/>
-                <AppBarSeparator/>
-                <AppBarButton Icon="Add" Label="すぐキャプチャ" Command="{Binding StartCaptureCommand}"/>
-                <AppBarButton Icon="Add" Label="キャプチャ2" Command="{Binding StartCapture2Command}"/>
-                <AppBarSeparator/>
-                <AppBarButton Icon="Setting" Label="環境設定" Command="{Binding OpenSettingCommand}"/>
-            </CommandBar>
+            <TitleBar Title="AzusaCaptureApp">
+                <TitleBar.Content>
+
+                    <CommandBar x:Name="cmdBar" Grid.Row="0" Grid.Column="0" IsSticky="True" IsOpen="False" DefaultLabelPosition="Right">
+                        <AppBarButton Icon="Save" IsEnabled="{Binding IsDataNonNull}" Command="{Binding SaveToCommand}" Label="保存"/>
+                        <AppBarButton Icon="Copy" IsEnabled="{Binding IsDataNonNull}" Command="{Binding SetClipboardCommand}" Label="コピー"/>
+                        <AppBarButton Icon="OpenWith" IsEnabled="{Binding IsDataNonNull}" Command="{Binding OpenInAnotherAppCommand}" Label="ほかのプログラムで開く"/>
+                        <AppBarButton Icon="Trim" IsEnabled="{Binding IsDataNonNull}" Command="{Binding StartTrimingCommand}" Label="トリミング"/>
+                        <AppBarSeparator/>
+                        <AppBarButton Icon="Add" Label="すぐキャプチャ" Command="{Binding StartCaptureCommand}"/>
+                        <AppBarButton Icon="Add" Label="キャプチャ2" Command="{Binding StartCapture2Command}"/>
+                        <AppBarSeparator/>
+                        <AppBarButton Icon="Setting" Label="環境設定" Command="{Binding OpenSettingCommand}"/>
+                    </CommandBar>
+                </TitleBar.Content>
+            </TitleBar>
             <CommandBar x:Name="trimCmdBar" Visibility="Collapsed" Grid.Row="0" Grid.Column="0" Background="Transparent" IsOpen="False" DefaultLabelPosition="Right">
                 <AppBarButton Icon="Trim" Command="{Binding FinishTrimCommand}" Label="完了"/>
             </CommandBar>
-            <ScrollViewer Grid.Row="1" Grid.Column="0" ZoomMode="Enabled"
-            IsTabStop="True" IsVerticalScrollChainingEnabled="True"
-            HorizontalAlignment="Stretch" VerticalAlignment="Stretch"
-            HorizontalScrollMode="Enabled" HorizontalScrollBarVisibility="Auto"
-            VerticalScrollMode="Enabled" VerticalScrollBarVisibility="Auto">
-                <ScrollViewer.Background>
-                    <SolidColorBrush Color="#2d2c2c"/>
-                </ScrollViewer.Background>
-                <Grid x:Name="imgContent">
-                    <Image x:Name="img" Source="{Binding CurrentImg2}" AutomationProperties.Name="cliff" Stretch="None"
-           HorizontalAlignment="Center" VerticalAlignment="Center"/>
 
 
-                    <Image x:Name="fullSizeImg" Source="{Binding FullSizeImg2}" Visibility="Collapsed" AutomationProperties.Name="cliff" Stretch="None"
-           HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    <Canvas Visibility="Collapsed" x:Name="cnv" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center">
-                        
-                        <!--指-->
-                        <Thumb x:Name="TopLeftThumb" Style="{StaticResource TopLeft}" Canvas.ZIndex="10" Width="20" Height="20" Background="Gray"/>
-                        <Thumb x:Name="TopRightThumb" Canvas.ZIndex="10" Width="20" Height="20" Background="Gray"/>
-                        <Thumb x:Name="BottomLeftThumb" Canvas.ZIndex="10" Width="20" Height="20" Background="Gray"/>
-                        <Thumb x:Name="BottomRightThumb" Canvas.ZIndex="10" Width="20" Height="20" Background="Gray"/>
-
-                        <Polygon DragEnter="Polygon_DragEnter"/>
-
-                        <!--選択範囲を示す四角形-->
-                        <Rectangle x:Name="selectionAreaRectangle" Canvas.ZIndex="1" Stroke="Aqua" StrokeThickness="6" Fill="Transparent" Opacity="1" Canvas.Left="0" Canvas.Top="0" />
-
-                        <!--選択範囲外の部分-->
-                        <Rectangle x:Name="LeftOverlay" Canvas.ZIndex="1" Opacity="0.7" Fill="Black" Canvas.Left="0" Canvas.Top="0" />
-                        <Rectangle x:Name="RightOverlay" Canvas.ZIndex="1" Opacity="0.7" Fill="Black" Canvas.Left="0" Canvas.Top="0" />
-                        <Rectangle x:Name="TopOverlay" Canvas.ZIndex="1" Opacity="0.7" Fill="Black" Canvas.Left="0" Canvas.Top="0" />
-                        <Rectangle x:Name="BottomOverlay" Canvas.ZIndex="1" Opacity="0.7" Fill="Black" Canvas.Left="0" Canvas.Top="0" />
-                        
-                        
-                    </Canvas>
-                </Grid>
-            </ScrollViewer>
+            <zoom:ZoomView x:Name="zoomView" Visibility="Collapsed" Grid.Row="1" Grid.Column="0" Img="{Binding FullSizeImg2}"></zoom:ZoomView>
 
 
         </Grid>
