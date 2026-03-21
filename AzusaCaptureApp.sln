@@ -7,6 +7,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzusaCaptureApp", "AzusaCap
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZoomViewMauiDev", "ZoomViewMauiDev\ZoomViewMauiDev.csproj", "{74F40B32-B697-7A13-FEF1-FE41F493512A}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "InnoSetup", "InnoSetup", "{DDB4EF12-CC4E-5E88-E6FC-71A802F4DE97}"
+	ProjectSection(SolutionItems) = preProject
+		Setup.iss = Setup.iss
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM64 = Debug|ARM64
