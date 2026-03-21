@@ -5,7 +5,7 @@ VisualStudioVersion = 17.14.36121.58
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AzusaCaptureApp", "AzusaCaptureApp\AzusaCaptureApp.csproj", "{EC5F3544-025D-476E-8759-DA97435F1E4D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZoomViewMauiDev", "..\ZoomViewMauiDev\ZoomViewMauiDev\ZoomViewMauiDev.csproj", "{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZoomViewMauiDev", "ZoomViewMauiDev\ZoomViewMauiDev.csproj", "{74F40B32-B697-7A13-FEF1-FE41F493512A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,18 +35,18 @@ Global
 		{EC5F3544-025D-476E-8759-DA97435F1E4D}.Release|x86.ActiveCfg = Release|x86
 		{EC5F3544-025D-476E-8759-DA97435F1E4D}.Release|x86.Build.0 = Release|x86
 		{EC5F3544-025D-476E-8759-DA97435F1E4D}.Release|x86.Deploy.0 = Release|x86
-		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Debug|ARM64.ActiveCfg = Debug|Any CPU
-		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Debug|ARM64.Build.0 = Debug|Any CPU
-		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Debug|x64.Build.0 = Debug|Any CPU
-		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Debug|x86.Build.0 = Debug|Any CPU
-		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Release|ARM64.ActiveCfg = Release|Any CPU
-		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Release|ARM64.Build.0 = Release|Any CPU
-		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Release|x64.ActiveCfg = Release|Any CPU
-		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Release|x64.Build.0 = Release|Any CPU
-		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Release|x86.ActiveCfg = Release|Any CPU
-		{31E48BCE-7EE0-FAEA-8F5C-1A1023FFA636}.Release|x86.Build.0 = Release|Any CPU
+		{74F40B32-B697-7A13-FEF1-FE41F493512A}.Debug|ARM64.ActiveCfg = Debug|Any CPU
+		{74F40B32-B697-7A13-FEF1-FE41F493512A}.Debug|ARM64.Build.0 = Debug|Any CPU
+		{74F40B32-B697-7A13-FEF1-FE41F493512A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{74F40B32-B697-7A13-FEF1-FE41F493512A}.Debug|x64.Build.0 = Debug|Any CPU
+		{74F40B32-B697-7A13-FEF1-FE41F493512A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{74F40B32-B697-7A13-FEF1-FE41F493512A}.Debug|x86.Build.0 = Debug|Any CPU
+		{74F40B32-B697-7A13-FEF1-FE41F493512A}.Release|ARM64.ActiveCfg = Release|Any CPU
+		{74F40B32-B697-7A13-FEF1-FE41F493512A}.Release|ARM64.Build.0 = Release|Any CPU
+		{74F40B32-B697-7A13-FEF1-FE41F493512A}.Release|x64.ActiveCfg = Release|Any CPU
+		{74F40B32-B697-7A13-FEF1-FE41F493512A}.Release|x64.Build.0 = Release|Any CPU
+		{74F40B32-B697-7A13-FEF1-FE41F493512A}.Release|x86.ActiveCfg = Release|Any CPU
+		{74F40B32-B697-7A13-FEF1-FE41F493512A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<UserControl
+    x:Class="ZoomViewMauiDev.ZoomView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ZoomViewMauiDev"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    PointerWheelChanged="ScrollViewer_PointerWheelChanged">
+
+    <Grid>
+
+        <Grid.Resources>
+
+            <!-- TopLeft: ┘を180°回転した形 → 左上向きL字 -->
+            <Style x:Key="TopLeft" TargetType="Thumb">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Thumb">
+                            <Grid>
+                                <Polygon
+                            Points="0,0 20,0 20,8 8,8 8,20 0,20"
+                            Fill="SkyBlue"
+                            StrokeThickness="0" />
+                                <!-- ヒット領域 -->
+                                <Polygon Points="-10,-10 10,-10 10,10 -10,10" Fill="Transparent"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- TopRight: 右上向きL字 -->
+            <Style x:Key="TopRight" TargetType="Thumb">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Thumb">
+                            <Grid>
+                                <Polygon
+                            Points="10,0 -10,0 -10,8 2,8 2,20 10,20"
+                            Fill="SkyBlue"
+                            StrokeThickness="0" />
+                                <Polygon Points="-10,-10 10,-10 10,10 -10,10" Fill="Transparent"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- BottomLeft: 左下向きL字 -->
+            <Style x:Key="BottomLeft" TargetType="Thumb">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Thumb">
+                            <Grid>
+                                <Polygon
+                            Points="0,10 0,-10 8,-10 8,2 20,2 20,10"
+                            Fill="SkyBlue"
+                            StrokeThickness="0" />
+                                <Polygon Points="-10,-10 10,-10 10,10 -10,10" Fill="Transparent"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+            <!-- BottomRight: 右下向きL字 -->
+            <Style x:Key="BottomRight" TargetType="Thumb">
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Thumb">
+                            <Grid>
+                                <Polygon
+                            Points="10,10 10,-10 2,-10 2,2 -10,2 -10,10"
+                            Fill="SkyBlue"
+                            StrokeThickness="0" />
+                                <Polygon Points="-10,-10 10,-10 10,10 -10,10" Fill="Transparent"/>
+                            </Grid>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+
+        </Grid.Resources>
+
+        <Grid 
+            x:Name="mainContent"
+            PointerWheelChanged="ScrollViewer_PointerWheelChanged">
+            <ScrollViewer x:Name="scrollViewer"
+                ZoomMode="Enabled"
+                IsTabStop="True" 
+                IsVerticalScrollChainingEnabled="True"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                HorizontalScrollMode="Enabled" 
+                HorizontalScrollBarVisibility="Auto"
+                VerticalScrollMode="Enabled" 
+                VerticalScrollBarVisibility="Auto">
+                <ScrollViewer.Background>
+                    <SolidColorBrush Color="#2d2c2c"/>
+                </ScrollViewer.Background>
+                
+                
+                <Grid x:Name="imgContent">
+                    <Image x:Name="fullSizeImg" AutomationProperties.Name="cliff" Stretch="None"
+           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+                    <Canvas x:Name="cnv" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center">
+
+                        <!--指-->
+                        <Thumb x:Name="TopLeftThumb"     Style="{StaticResource TopLeft}"     Canvas.ZIndex="10" Width="20" Height="20" Background="Transparent"/>
+                        <Thumb x:Name="TopRightThumb"    Style="{StaticResource TopRight}"    Canvas.ZIndex="10" Width="20" Height="20" Background="Transparent"/>
+                        <Thumb x:Name="BottomLeftThumb"  Style="{StaticResource BottomLeft}"  Canvas.ZIndex="10" Width="20" Height="20" Background="Transparent"/>
+                        <Thumb x:Name="BottomRightThumb" Style="{StaticResource BottomRight}" Canvas.ZIndex="10" Width="20" Height="20" Background="Transparent"/>
+                        
+                        
+                        <!--選択範囲を示す四角形-->
+                        <Rectangle x:Name="selectionAreaRectangle" Canvas.ZIndex="1" Stroke="Aqua" StrokeThickness="6" Fill="Transparent" Opacity="1" Canvas.Left="0" Canvas.Top="0" />
+
+                        <!--選択範囲外の部分-->
+                        <Rectangle x:Name="LeftOverlay" Canvas.ZIndex="1" Opacity="0.7" Fill="Red" Canvas.Left="0" Canvas.Top="0" />
+                        <Rectangle x:Name="RightOverlay" Canvas.ZIndex="1" Opacity="0.7" Fill="Red" Canvas.Left="0" Canvas.Top="0" />
+                        <Rectangle x:Name="TopOverlay" Canvas.ZIndex="1" Opacity="0.7" Fill="Red" Canvas.Left="0" Canvas.Top="0" />
+                        <Rectangle x:Name="BottomOverlay" Canvas.ZIndex="1" Opacity="0.7" Fill="Red" Canvas.Left="0" Canvas.Top="0" />
+
+
+                    </Canvas>
+                </Grid>
+            </ScrollViewer>
+
+
+        </Grid>
+    </Grid>
+</UserControl>

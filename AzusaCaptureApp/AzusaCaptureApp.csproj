@@ -46,10 +46,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\ZoomViewMauiDev\ZoomViewMauiDev\ZoomViewMauiDev.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Content Update="75642.jpg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -94,6 +90,10 @@
 
   <ItemGroup>
     <Folder Include="Views\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\ZoomViewMauiDev\ZoomViewMauiDev.csproj" />
   </ItemGroup>
 
   <!-- Publish Properties -->
