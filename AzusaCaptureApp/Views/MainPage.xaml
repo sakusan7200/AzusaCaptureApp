@@ -58,7 +58,11 @@
                 <TitleBar.Content>
                     <Grid>
                         <CommandBar x:Name="cmdBar" Grid.Row="0" Grid.Column="0" IsSticky="True" IsOpen="False" DefaultLabelPosition="Right">
-                            <AppBarButton Icon="Save" IsEnabled="{Binding IsDataNonNull}" Command="{Binding SaveToCommand}" Label="保存"/>
+                            <AppBarButton Icon="Save" IsEnabled="{Binding IsDataNonNull}" Command="{Binding SaveToCommand}" Label="保存">
+                                <AppBarButton.KeyboardAccelerators>
+                                    <KeyboardAccelerator Key="S" Modifiers="Control"/> 
+                                </AppBarButton.KeyboardAccelerators>
+                            </AppBarButton>
                             <AppBarButton Icon="Copy" IsEnabled="{Binding IsDataNonNull}" Command="{Binding SetClipboardCommand}" Label="コピー"/>
                             <AppBarButton Icon="OpenWith" IsEnabled="{Binding IsDataNonNull}" Command="{Binding OpenInAnotherAppCommand}" Label="ほかのプログラムで開く"/>
                             <AppBarButton Icon="Trim" IsEnabled="{Binding IsDataNonNull}" Command="{Binding StartTrimingCommand}" Label="トリミング"/>

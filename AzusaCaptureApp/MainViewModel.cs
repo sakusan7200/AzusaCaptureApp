@@ -255,6 +255,8 @@ public partial class MainViewModel : ObservableObject
         //mws.Close();
         GetShot();
 
+        mws.MoveToMainWindow();
+
         var f_name = setting.GetFilenameFromFormat();
 
         CaptureMng.SaveTo(Setting.SaveTo + $"\\{f_name}.png", current.ms, Setting.DefalutFormat.magickFormat);
