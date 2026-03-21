@@ -404,17 +404,10 @@ public partial class MainViewModel : ObservableObject
             savePicker.FileTypeChoices.Add(f.formatName, new List<string>() { "." + f.extension });
         }
         var file = await savePicker.PickSaveFileAsync();
-
-
-
-
-        Debug.WriteLine(file.Name);
-        Debug.WriteLine(file.FileType);
-
-        //TODO:
-        CaptureMng.SaveTo(file.Path, current.ms, MagickFormat.Png);
-
-
+        if(file != null)
+        {
+            CaptureMng.SaveTo(file.Path, current.ms, MagickFormat.Png);
+        }
     }
 
     public void CursorPressed(Point position)

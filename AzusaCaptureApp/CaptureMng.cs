@@ -1,17 +1,12 @@
-﻿using Microsoft.UI.Xaml.Media.Imaging;
+﻿using ImageMagick;
+using Microsoft.UI.Xaml.Media.Imaging;
 using System;
-using System.Collections.Generic;
-//using System.Drawing;
-//using System.Drawing.Imaging;
+using System.Diagnostics;
 using System.IO;
-using System.Windows.Forms;
-using System.Linq;
-using System.Text;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.Storage.Streams;
-using ImageMagick;
-using System.Diagnostics;
 
 namespace AzusaCaptureApp;
 
@@ -95,14 +90,26 @@ public static class CaptureMng
         var img = new MagickImage(ms);
         img.Format = format;
         using var fs = new FileStream(path, FileMode.Create);
-        Debug.WriteLine("aaaa");
         img.Write(fs);
     }
-    
-    public static void SetCipboard(MemoryStream ms)
+
+    public static async Task SetCipboard(MemoryStream ms)
     {
-        //msにはpng形式の画像が入ってる
-        var bmp = new System.Drawing.Bitmap(ms);
-       System.Windows.Forms.Clipboard.SetImage(bmp);
+        ms.Seek(0, SeekOrigin.Begin);
+
+        var randomAccessStream = new InMemoryRandomAccessStream();
+        using (var outputStream = randomAccessStream.GetOutputStreamAt(0))
+        {
+            var writer = new DataWriter(outputStream);
+            writer.WriteBytes(ms.ToArray());
+            await writer.StoreAsync();
+            await outputStream.FlushAsync();
+        }
+
+        //クリップボードに設定
+        var streamRef = RandomAccessStreamReference.CreateFromStream(randomAccessStream);
+        var dataPackage = new DataPackage();
+        dataPackage.SetBitmap(streamRef);
+        Clipboard.SetContent(dataPackage);
     }
 }

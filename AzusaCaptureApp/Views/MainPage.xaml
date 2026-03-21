@@ -63,13 +63,32 @@
                                     <KeyboardAccelerator Key="S" Modifiers="Control"/> 
                                 </AppBarButton.KeyboardAccelerators>
                             </AppBarButton>
-                            <AppBarButton Icon="Copy" IsEnabled="{Binding IsDataNonNull}" Command="{Binding SetClipboardCommand}" Label="コピー"/>
+                            
+                            <AppBarButton Icon="Copy" IsEnabled="{Binding IsDataNonNull}" Command="{Binding SetClipboardCommand}" Label="コピー">
+                                <AppBarButton.KeyboardAccelerators>
+                                    <KeyboardAccelerator Key="C" Modifiers="Control"/>
+                                </AppBarButton.KeyboardAccelerators>
+                            </AppBarButton>
+                            
                             <AppBarButton Icon="OpenWith" IsEnabled="{Binding IsDataNonNull}" Command="{Binding OpenInAnotherAppCommand}" Label="ほかのプログラムで開く"/>
+                            
                             <AppBarButton Icon="Trim" IsEnabled="{Binding IsDataNonNull}" Command="{Binding StartTrimingCommand}" Label="トリミング"/>
+                            
                             <AppBarSeparator/>
-                            <AppBarButton Icon="Add" Label="すぐキャプチャ" Command="{Binding StartCaptureCommand}"/>
-                            <AppBarButton Icon="Add" Label="キャプチャ2" Command="{Binding StartCapture2Command}"/>
+
+                            <AppBarButton Icon="Add" Label="全画面キャプチャ" Command="{Binding StartCaptureCommand}">
+                                <AppBarButton.KeyboardAccelerators>
+                                    <KeyboardAccelerator Key="N" Modifiers="Control"/>
+                                </AppBarButton.KeyboardAccelerators>
+                            </AppBarButton>
+                            <AppBarButton Icon="Add" Label="キャプチャ" Command="{Binding StartCapture2Command}">
+                            <AppBarButton.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="N" Modifiers="Control,Shift"/>
+                            </AppBarButton.KeyboardAccelerators>
+                            </AppBarButton>
+
                             <AppBarSeparator/>
+                            
                             <AppBarButton Icon="Setting" Label="環境設定" Command="{Binding OpenSettingCommand}"/>
                         </CommandBar>
                         <CommandBar x:Name="trimCmdBar" Visibility="Collapsed" Grid.Row="0" Grid.Column="0" Background="Transparent" IsOpen="False" DefaultLabelPosition="Right">
