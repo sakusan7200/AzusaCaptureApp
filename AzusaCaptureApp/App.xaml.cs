@@ -50,17 +50,7 @@ namespace AzusaCaptureApp
             sc.AddSingleton<IMainWindowService, MainWindowService>();
             Services = sc.BuildServiceProvider();
 
-            //キーボードフックの設定
-            //TODO: ms-screenclipへの対応
-            var a = new KeyboardAccelerator();
-            a.Key = Windows.System.VirtualKey.Snapshot;
-            a.Modifiers = Windows.System.VirtualKeyModifiers.Control;
-            HotkeyManager.Current.AddOrReplace("OnPrintScreenPressed", a, OnPrintScreenPressed);
-        }
-
-        private void OnPrintScreenPressed(object sender, HotkeyEventArgs args)
-        {
-            VM.StartCaptureCommand.Execute(null);
+            KeyboardRegister.Regist();
         }
 
         /// <summary>

@@ -273,8 +273,6 @@ public partial class MainViewModel : ObservableObject
         )
         .Show();
 
-
-
         mws.MoveToMainWindow();
     }
 
@@ -367,8 +365,11 @@ public partial class MainViewModel : ObservableObject
     private async void CaptureRightNow()
     {
         CaptureMng.Init(Setting.SaveTo, current.ms);
-        mws.Minimaize();
-        //mws.Close();
+        if (mws.IsActive())
+        {
+            mws.Minimaize();
+        }
+
         GetShot();
 
         mws.MoveToMainWindow();
