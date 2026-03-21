@@ -107,4 +107,9 @@
     <PackageIcon>app_icon.png</PackageIcon>
 
   </PropertyGroup>
+
+  <PropertyGroup>
+    <PublishTrimmed>false</PublishTrimmed>
+    <PublishReadyToRun>false</PublishReadyToRun>
+  </PropertyGroup>
 </Project>
