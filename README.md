@@ -5,7 +5,7 @@ WinUI3で構築された画面キャプチャアプリです。
 ![AzusaCaptureAppアプリののウィンドウスクリーンショット。VisualStudioとInnoSetupのウィンドウが映っている](AppPic1.png)
 
 ## インストール方法
-○○より、インストーラーを入手できます。
+[Releases](https://github.com/sakusan7200/AzusaCaptureApp/releases/tag/v0.1)より、インストーラーを入手できます。
 
 ## 機能
  * 静止画のキャプチャ
