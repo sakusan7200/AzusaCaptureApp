@@ -30,7 +30,7 @@ ChangesAssociations=yes
 DisableProgramGroupPage=yes
 ; Uncomment the following line to run in non administrative install mode (install for current user only).
 ;PrivilegesRequired=lowest
-OutputDir=C:\Users\sakua\Desktop
+OutputDir=.
 OutputBaseFilename=mysetup
 SolidCompression=yes
 WizardStyle=modern dynamic windows11
