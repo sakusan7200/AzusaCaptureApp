@@ -35,10 +35,10 @@ public class CaptureWindowService : ICaptureWindowService
         if (!isOnceActivated)
         {
             //isOnceActivated = true;
-            File.AppendAllText("C:\\Users\\sakua\\Desktop\\.log", $"{DateTime.Now.ToString()} before_set_presenter\n");
+            //File.AppendAllText("C:\\Users\\sakua\\Desktop\\.log", $"{DateTime.Now.ToString()} before_set_presenter\n");
             App.CurrentCaptureWindow.AppWindow.SetPresenter(Microsoft.UI.Windowing.AppWindowPresenterKind.FullScreen);
 
-            File.AppendAllText("C:\\Users\\sakua\\Desktop\\.log", $"{DateTime.Now.ToString()} after_set_presenter\n");
+            //File.AppendAllText("C:\\Users\\sakua\\Desktop\\.log", $"{DateTime.Now.ToString()} after_set_presenter\n");
         }
     }
 

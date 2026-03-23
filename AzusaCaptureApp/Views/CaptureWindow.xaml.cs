@@ -9,6 +9,7 @@ using Microsoft.UI.Xaml.Media.Imaging;
 using Microsoft.UI.Xaml.Navigation;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -39,6 +40,49 @@ public sealed partial class CaptureWindow : Window
         this.vm = App.VM;
         mainContent.DataContext = vm;
         //AppWindow.Hide();
+
+        //WindowEnumerator.EnumerateWindows().Reverse();
+        var i = 0;
+        var list = WindowEnumerator.EnumerateWindows();
+        list.Reverse();
+        foreach (var item in WindowEnumerator.EnumerateWindows())
+        {
+            if(!WindowEnumerator.IsUserWindow(item.Handle)) continue;
+
+            var arect = item.GetAzusaRect();
+            var title = item.Title;
+            var r = new Rectangle();
+            r.Fill = new SolidColorBrush(Color.FromArgb(10, 0, 0, 255));
+            r.Stroke = new SolidColorBrush(Color.FromArgb(250, 255, 0, 0));
+            r.StrokeThickness = 5;
+
+            windowCnv.Children.Add(r);
+
+            //1000以降はウィンドウキャンバス用にする
+            //下のほうに別の仮想デスクトップとか、nvidiaのオーバーレイを埋もれさせる
+            Canvas.SetZIndex(r, 1000 + i);
+            Canvas.SetLeft(r, arect.left);
+            Canvas.SetTop(r, arect.top);
+            r.Width = arect.width;
+            r.Height = arect.height;
+
+            r.Name = item.Title;
+
+            r.PointerEntered += (sender, e) =>
+            {
+                var list2 = WindowEnumerator.EnumerateWindows();
+                r.Fill = new SolidColorBrush(Color.FromArgb(250, 0, 100, 255));
+
+                Debug.WriteLine(r.Name);
+            };
+
+            r.PointerExited += (sender, e) =>
+            {
+                r.Fill = new SolidColorBrush(Color.FromArgb(10, 0, 0, 255));
+            };
+
+            i++;
+        }
     }
 
     public void AddRectToCanvas(Rectangle rect)
@@ -49,8 +93,8 @@ public sealed partial class CaptureWindow : Window
 
     private async void Window_Activated(object sender, WindowActivatedEventArgs args)
     {
-        File.WriteAllText("C:\\Users\\sakua\\Desktop\\.log", "a\n");
-        File.AppendAllText("C:\\Users\\sakua\\Desktop\\.log", $"{DateTime.Now.ToString()} Window_Activated\n");
+        //File.WriteAllText("C:\\Users\\sakua\\Desktop\\.log", "a\n");
+        //File.AppendAllText("C:\\Users\\sakua\\Desktop\\.log", $"{DateTime.Now.ToString()} Window_Activated\n");
         vm.ActivationProcess();
     }
 

@@ -11,6 +11,11 @@
     Activated="Window_Activated">
 
     <Grid x:Name="mainContent">
+        <!-- ウィンドウ洗濯用Canvas -->
+        <Canvas x:Name="windowCnv" Background="Transparent" Canvas.ZIndex="1">
+
+        </Canvas>
+        
         <!-- 背景Canvas -->
         <Canvas x:Name="cnv"
             Canvas.ZIndex="0"
@@ -22,6 +27,8 @@
                Source="{Binding CurrentImg2}"
                IsHitTestVisible="False"/>
         </Canvas>
+        
+        
         <!--アニメーションpngがあるんだとか-->
         <!-- 中央配置のツールバー -->
         <StackPanel Orientation="Horizontal"
