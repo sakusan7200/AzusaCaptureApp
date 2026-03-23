@@ -59,9 +59,23 @@ namespace AzusaCaptureApp
         /// <param name="args">Details about the launch request and process.</param>
         protected override void OnLaunched(Microsoft.UI.Xaml.LaunchActivatedEventArgs args)
         {
+            bool isOpenWindow = true;
+            foreach (var arg in Environment.GetCommandLineArgs())
+            {
+                if(arg == "-b")
+                {
+                    isOpenWindow = false;
+                }
+            }
+
             VM = Services.GetRequiredService<MainViewModel>();
             CurrentMainWindow = new MainWindow();
-            CurrentMainWindow.Activate();
+
+
+            if (isOpenWindow)
+            {
+                CurrentMainWindow.Activate();
+            }
         }
 
         public static void ShowCaptureWindow()

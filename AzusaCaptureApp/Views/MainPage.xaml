@@ -30,10 +30,8 @@
             </Style>
         </Grid.Resources>
         
-        <tb:TaskbarIcon x:Name="taskbaricon" ToolTipText="AzusaCaptureApp">
-            <tb:TaskbarIcon.IconSource>
-                <tb:GeneratedIconSource Text="🖼️" Foreground="Red"/>
-            </tb:TaskbarIcon.IconSource>
+        <!--タスクバー常駐-->
+        <tb:TaskbarIcon x:Name="taskbaricon" ToolTipText="AzusaCaptureApp" IconSource="/Assets/app_icon.ico">
             <tb:TaskbarIcon.ContextFlyout>
                 <MenuFlyout AreOpenCloseAnimationsEnabled="False">
                     <MenuFlyoutItem Text="ウィンドウを表示" Command="{Binding ReturnToMainWindowCommand}"/>
