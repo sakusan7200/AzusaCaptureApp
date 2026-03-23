@@ -32,10 +32,12 @@ namespace AzusaCaptureApp;
 /// </summary>
 public sealed partial class CaptureWindow : Window
 {
+    public static CaptureWindow Instance { get;private set; }
     MainViewModel vm;
 
     public CaptureWindow()
     {
+        Instance = this;
         InitializeComponent();
         this.vm = App.VM;
         mainContent.DataContext = vm;
@@ -90,6 +92,17 @@ public sealed partial class CaptureWindow : Window
         cnv.Children.Add(rect);
     }
 
+    public void SwitchWindowRects(bool isenabled)
+    {
+        if (isenabled)
+        {
+            windowCnv.Visibility = Visibility.Visible;
+        }
+        else
+        {
+            windowCnv.Visibility = Visibility.Collapsed;
+        }
+    }
 
     private async void Window_Activated(object sender, WindowActivatedEventArgs args)
     {

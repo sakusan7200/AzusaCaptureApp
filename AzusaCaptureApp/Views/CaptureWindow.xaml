@@ -12,7 +12,7 @@
 
     <Grid x:Name="mainContent">
         <!-- ウィンドウ洗濯用Canvas -->
-        <Canvas x:Name="windowCnv" Background="Transparent" Canvas.ZIndex="1">
+        <Canvas x:Name="windowCnv" Visibility="Collapsed" Background="Transparent" Canvas.ZIndex="1">
 
         </Canvas>
         

@@ -74,6 +74,13 @@ public partial class MainViewModel : ObservableObject
             {
                 OnPropertyChanged(nameof(IsDataNonNull));
             }
+
+            if(e.PropertyName == nameof(WindowChecked))
+            {
+                //OnPropertyChanged(nameof(WindowChecked));
+
+                cws.SwitchWindowRects(WindowChecked);
+            }
         };
     }
 

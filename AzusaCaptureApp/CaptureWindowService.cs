@@ -59,7 +59,10 @@ public class CaptureWindowService : ICaptureWindowService
         //w.DisableButtons(wa);
     }
 
-
+    public void SwitchWindowRects(bool windowChecked)
+    {
+        CaptureWindow.Instance.SwitchWindowRects(windowChecked);
+    }
 }
 public interface ICaptureWindowService
 {
@@ -68,4 +71,5 @@ public interface ICaptureWindowService
     public void GoFullScr();
     public void MoveToMainWindow();
     public void DisableWayButtons(CaptureWay w);
+    void SwitchWindowRects(bool windowChecked);
 }
