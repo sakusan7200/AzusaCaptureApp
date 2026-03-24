@@ -351,10 +351,6 @@ public partial class MainViewModel : ObservableObject
             //PickFolderOutputTextBlock.Text = "Picked folder: " + folder.Name;
             Setting.SaveTo = folder.Path;
         }
-        else
-        {
-            //PickFolderOutputTextBlock.Text = "Operation cancelled.";
-        }
     }
 
     [RelayCommand]

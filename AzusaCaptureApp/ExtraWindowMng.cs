@@ -1,37 +1,17 @@
-﻿using Microsoft.UI.Xaml.Controls;
+﻿using AzusaCaptureApp;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using System.Text;
 //using static WinFormsApp1.NativeMethods;
-public struct RECT
+internal struct RECT
 {
     public int left;
     public int top;
     public int right;
     public int bottom;
-}
-public struct AzusaRect
-{
-    public int left;
-    public int top;
-    public int right;
-    public int bottom;
-    public int width
-    {
-        get => right - left;
-    }
-
-    public int height
-    {
-        get => bottom - top;
-    }
-
-    public override string ToString()
-    {
-        return $"{left},{top} {right},{bottom}";
-    }
 }
 
 public static class Extentions
@@ -47,25 +27,16 @@ public static class WindowEnumerator
 {
     [DllImport("user32.dll")]
     private static extern bool GetWindowRect(IntPtr hwnd, out RECT lpRect);
-
-
-    
-    // Win32 API のインポート
     [DllImport("user32.dll")]
     private static extern bool EnumWindows(EnumWindowsProc lpEnumFunc, IntPtr lParam);
-
     [DllImport("user32.dll")]
     private static extern bool IsIconic(IntPtr hWnd); // 最小化チェック
-
     [DllImport("user32.dll")]
     private static extern bool IsWindowVisible(IntPtr hWnd);
-
     [DllImport("user32.dll", CharSet = CharSet.Unicode)]
     private static extern int GetWindowText(IntPtr hWnd, StringBuilder lpString, int nMaxCount);
-
     [DllImport("user32.dll", CharSet = CharSet.Unicode)]
     private static extern int GetWindowTextLength(IntPtr hWnd);
-
     [DllImport("user32.dll")]
     private static extern uint GetWindowThreadProcessId(IntPtr hWnd, out uint lpdwProcessId);
     [DllImport("user32.dll")]
@@ -126,8 +97,10 @@ public static class WindowEnumerator
         return windows;
     }
 
-    public static bool IsUserWindow(IntPtr hWnd)
+    public static bool IsDecendWindow(WindowInfo wi)
     {
+        var hWnd = wi.Handle;
+
         if (!IsWindowVisible(hWnd)) return false;
         if (IsIconic(hWnd)) return false;
         
