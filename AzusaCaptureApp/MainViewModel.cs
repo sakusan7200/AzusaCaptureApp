@@ -417,6 +417,19 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
+    public void ShotByRect(AzusaRect rect)
+    {
+
+        DoTrim(rect.left, rect.top, rect.width, rect.height);
+        cws.MoveToMainWindow();
+        cws.Close();
+
+
+        SetClipboard();
+
+        //通知
+    }
+
     public void CursorPressed(Point position)
     {
         var f_name = setting.GetFilenameFromFormat();
@@ -456,6 +469,7 @@ public partial class MainViewModel : ObservableObject
     
     public void CursorMoved(Point position)
     {
+        //TODO: これおshotbyrectに統合する
 
         if (selectionRect == null) return;
 

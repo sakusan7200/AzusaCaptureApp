@@ -35,40 +35,68 @@ public sealed partial class CaptureWindow : Window
     public static CaptureWindow Instance { get;private set; }
     MainViewModel vm;
 
+    //aはbに含まれているか
+    private bool isContainedAnotherRect(AzusaRect a, AzusaRect b)
+    {
+        //var a = _a.ConvertToInternalRect();
+        //var b = _b.ConvertToInternalRect();
+        return a.left >= b.left&& a.left + a.width <= b.left + b.width && a.top >= b.top && a.top + a.height <= b.top + b.height;
+    }
+
     public CaptureWindow()
     {
         Instance = this;
         InitializeComponent();
         this.vm = App.VM;
         mainContent.DataContext = vm;
-        //AppWindow.Hide();
 
-        //WindowEnumerator.EnumerateWindows().Reverse();
         var i = 0;
         var list = WindowEnumerator.EnumerateWindows();
+        //下のほうに別の仮想デスクトップとか、nvidiaのオーバーレイを埋もれさせるためのreverse
         list.Reverse();
-        foreach (var item in WindowEnumerator.EnumerateWindows())
+
+        var resultrects = new List<AzusaRect>();
+
+        foreach (var item in list)
         {
             if(!WindowEnumerator.IsUserWindow(item.Handle)) continue;
 
             var arect = item.GetAzusaRect();
-            var title = item.Title;
+
+            var flag = false;
+
+            foreach (var a in resultrects)
+            {
+                if(isContainedAnotherRect(arect, a))
+                {
+                    flag = true;
+                    break;
+                }
+            }
+
+            if (!flag)
+            {
+                resultrects.Add(arect);
+            }
+        }
+
+        foreach(var a in resultrects)
+        {
             var r = new Rectangle();
             r.Fill = new SolidColorBrush(Color.FromArgb(10, 0, 0, 255));
             r.Stroke = new SolidColorBrush(Color.FromArgb(250, 255, 0, 0));
             r.StrokeThickness = 5;
 
+
             windowCnv.Children.Add(r);
 
-            //1000以降はウィンドウキャンバス用にする
-            //下のほうに別の仮想デスクトップとか、nvidiaのオーバーレイを埋もれさせる
             Canvas.SetZIndex(r, 1000 + i);
-            Canvas.SetLeft(r, arect.left);
-            Canvas.SetTop(r, arect.top);
-            r.Width = arect.width;
-            r.Height = arect.height;
+            Canvas.SetLeft(r, a.left);
+            Canvas.SetTop(r, a.top);
+            r.Width = a.width;
+            r.Height = a.height;
 
-            r.Name = item.Title;
+            //r.Name = item.Title;
 
             r.PointerEntered += (sender, e) =>
             {
@@ -81,6 +109,12 @@ public sealed partial class CaptureWindow : Window
             r.PointerExited += (sender, e) =>
             {
                 r.Fill = new SolidColorBrush(Color.FromArgb(10, 0, 0, 255));
+            };
+
+            r.PointerPressed += (sender, e) =>
+            {
+                //クロップ
+                vm.ShotByRect(((Rectangle)sender).ConvertToInternalRect());
             };
 
             i++;

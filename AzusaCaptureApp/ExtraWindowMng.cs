@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.UI.Xaml.Controls;
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
@@ -32,6 +33,16 @@ public struct AzusaRect
         return $"{left},{top} {right},{bottom}";
     }
 }
+
+public static class Extentions
+{
+
+    public static AzusaRect ConvertToInternalRect(this Microsoft.UI.Xaml.Shapes.Rectangle a)
+    {
+        return new AzusaRect() { left = (int)Canvas.GetLeft(a), top = (int)Canvas.GetTop(a), right = (int)Canvas.GetLeft(a) + (int)a.Width, bottom = (int)Canvas.GetTop(a) + (int)a.Height };
+    }
+}
+
 public static class WindowEnumerator
 {
     [DllImport("user32.dll")]
@@ -126,6 +137,14 @@ public static class WindowEnumerator
         GetWindowText(hWnd, sb, sb.Capacity);
 
         if (sb.ToString() == "Windows 入力エクスペリエンス") return false;
+
+        //自分のプロセスを除外
+        GetWindowThreadProcessId(hWnd, out uint pid);
+        var thisPid = Environment.ProcessId;
+        if (pid == thisPid)
+        {
+            return false;
+        }
 
         int len = GetWindowTextLength(hWnd);
         if (len == 0) return false;
