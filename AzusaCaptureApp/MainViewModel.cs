@@ -181,6 +181,8 @@ public partial class MainViewModel : ObservableObject
     [ObservableProperty] private bool fullScrGIFChecked;
     [ObservableProperty] private bool windowGIFChecked;
 
+    [ObservableProperty] private bool isAlwaysTopChecked;
+
     [ObservableProperty] private AzusaCaptureApp.AppSetting setting;
 
     public bool IsDataNonNull
@@ -380,6 +382,12 @@ public partial class MainViewModel : ObservableObject
         GetShot();
 
         mws.MoveToMainWindow();
+    }
+
+    [RelayCommand]
+    private void SetForeground()
+    {
+        mws.SetForeground();
     }
 
 

@@ -24,10 +24,14 @@ namespace AzusaCaptureApp
     /// </summary>
     public sealed partial class MainWindow : Window
     {
+        public static MainWindow Instance { get; private set; }
+
         public Frame RootFrame { get; private set; }
 
         public MainWindow()
         {
+            Instance = this;
+
             InitializeComponent();
             var rootFrame = new Frame();
             rootFrame.Navigate(typeof(MainPage));

@@ -45,7 +45,7 @@
         
         <Grid x:Name="mainContent">
             <Grid.RowDefinitions>
-                <RowDefinition Height="43px"/>
+                <RowDefinition Height="45px"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -70,7 +70,7 @@
                             
                             <AppBarButton Icon="OpenWith" IsEnabled="{Binding IsDataNonNull}" Command="{Binding OpenInAnotherAppCommand}" Label="ほかのプログラムで開く"/>
                             
-                            <AppBarButton Icon="Trim" IsEnabled="{Binding IsDataNonNull}" Command="{Binding StartTrimingCommand}" Label="トリミング"/>
+                            <AppBarButton Icon="Crop" IsEnabled="{Binding IsDataNonNull}" Command="{Binding StartTrimingCommand}" Label="トリミング"/>
                             
                             <AppBarSeparator/>
 
@@ -84,6 +84,8 @@
                                 <KeyboardAccelerator Key="N" Modifiers="Control,Shift"/>
                             </AppBarButton.KeyboardAccelerators>
                             </AppBarButton>
+
+                            <AppBarToggleButton Icon="SetLockScreen" Label="最前面" Command="{Binding SetForegroundCommand}" IsChecked="{Binding IsAlwaysTopChecked}"/>
 
                             <AppBarSeparator/>
                             

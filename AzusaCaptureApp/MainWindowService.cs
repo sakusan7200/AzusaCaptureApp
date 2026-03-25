@@ -1,4 +1,5 @@
-﻿using Microsoft.UI.Xaml.Shapes;
+﻿using Microsoft.UI.Windowing;
+using Microsoft.UI.Xaml.Shapes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,6 +68,13 @@ public class MainWindowService : IMainWindowService
         
     }
 
+    public void SetForeground()
+    {
+        var presenter = MainWindow.Instance.AppWindow.Presenter as OverlappedPresenter;
+        presenter.IsAlwaysOnTop = !presenter.IsAlwaysOnTop;
+        //MainWindow.Instance.AppWindow.SetPresenter(presenter);
+    }
+
     public Microsoft.UI.Xaml.Shapes.Rectangle FinishTrim()
     {
         return MainPage.Singleton.DoneTriming();
@@ -85,5 +93,6 @@ public interface IMainWindowService
     public bool IsActive();
     public bool IsOpened();
     public void StartTriming();
+    public void SetForeground();
     public Rectangle FinishTrim();
 }
