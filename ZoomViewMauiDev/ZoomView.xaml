@@ -13,6 +13,15 @@
 
         <Grid.Resources>
 
+            <!-- 選択セリア外のオーバーレイ -->
+            <Style x:Key="overlay_background" TargetType="Rectangle">
+                <Setter Property="Fill" Value="#0F0F0F"/>
+                <Setter Property="Canvas.ZIndex" Value="1"/>
+                <Setter Property="Opacity" Value="0.94"/>
+                <Setter Property="Canvas.Left" Value="0"/>
+                <Setter Property="Canvas.Top" Value="0"/>
+            </Style>
+
             <!-- TopLeft: ┘を180°回転した形 → 左上向きL字 -->
             <Style x:Key="TopLeft" TargetType="Thumb">
                 <Setter Property="Template">
@@ -21,7 +30,7 @@
                             <Grid>
                                 <Polygon
                             Points="0,0 20,0 20,8 8,8 8,20 0,20"
-                            Fill="SkyBlue"
+                            Fill="#e6e6fa"
                             StrokeThickness="0" />
                                 <!-- ヒット領域 -->
                                 <Polygon Points="-10,-10 10,-10 10,10 -10,10" Fill="Transparent"/>
@@ -39,7 +48,7 @@
                             <Grid>
                                 <Polygon
                             Points="10,0 -10,0 -10,8 2,8 2,20 10,20"
-                            Fill="SkyBlue"
+                            Fill="#e6e6fa"
                             StrokeThickness="0" />
                                 <Polygon Points="-10,-10 10,-10 10,10 -10,10" Fill="Transparent"/>
                             </Grid>
@@ -56,7 +65,7 @@
                             <Grid>
                                 <Polygon
                             Points="0,10 0,-10 8,-10 8,2 20,2 20,10"
-                            Fill="SkyBlue"
+                            Fill="#e6e6fa"
                             StrokeThickness="0" />
                                 <Polygon Points="-10,-10 10,-10 10,10 -10,10" Fill="Transparent"/>
                             </Grid>
@@ -73,7 +82,7 @@
                             <Grid>
                                 <Polygon
                             Points="10,10 10,-10 2,-10 2,2 -10,2 -10,10"
-                            Fill="SkyBlue"
+                            Fill="#e6e6fa"
                             StrokeThickness="0" />
                                 <Polygon Points="-10,-10 10,-10 10,10 -10,10" Fill="Transparent"/>
                             </Grid>
@@ -116,13 +125,13 @@
                         
                         
                         <!--選択範囲を示す四角形-->
-                        <Rectangle x:Name="selectionAreaRectangle" Canvas.ZIndex="1" Stroke="Aqua" StrokeThickness="6" Fill="Transparent" Opacity="1" Canvas.Left="0" Canvas.Top="0" />
+                        <Rectangle x:Name="selectionAreaRectangle" Canvas.ZIndex="1" Stroke="White" StrokeThickness="3" Fill="Transparent" Opacity="1" Canvas.Left="0" Canvas.Top="0" />
 
                         <!--選択範囲外の部分-->
-                        <Rectangle x:Name="LeftOverlay" Canvas.ZIndex="1" Opacity="0.7" Fill="Red" Canvas.Left="0" Canvas.Top="0" />
-                        <Rectangle x:Name="RightOverlay" Canvas.ZIndex="1" Opacity="0.7" Fill="Red" Canvas.Left="0" Canvas.Top="0" />
-                        <Rectangle x:Name="TopOverlay" Canvas.ZIndex="1" Opacity="0.7" Fill="Red" Canvas.Left="0" Canvas.Top="0" />
-                        <Rectangle x:Name="BottomOverlay" Canvas.ZIndex="1" Opacity="0.7" Fill="Red" Canvas.Left="0" Canvas.Top="0" />
+                        <Rectangle x:Name="LeftOverlay" Style="{StaticResource overlay_background}" />
+                        <Rectangle x:Name="RightOverlay" Style="{StaticResource overlay_background}" />
+                        <Rectangle x:Name="TopOverlay" Style="{StaticResource overlay_background}" />
+                        <Rectangle x:Name="BottomOverlay" Style="{StaticResource overlay_background}" />
 
 
                     </Canvas>

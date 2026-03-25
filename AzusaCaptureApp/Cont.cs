@@ -30,7 +30,7 @@ public static class Cont
 #endif
     public static string WinUsrName { get;private set; }
 
-    public static readonly Color SelectionRectBorder = Colors.Blue;
+    public static readonly Color SelectionRectBorder = Colors.White;
     public static readonly Color SelectionRectArea = Color.FromArgb(50, 0, 0, 255);
     public static readonly Color Gray = Color.FromArgb(100, 26, 26, 26);
 

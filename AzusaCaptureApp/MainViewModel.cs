@@ -17,6 +17,8 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Storage.AccessCache;
 using Windows.Storage.Pickers;
+using Windows.UI;
+
 //using System.Windows.Media.Imaging;
 using Point = Windows.Foundation.Point;
 using Rectangle = Microsoft.UI.Xaml.Shapes.Rectangle;
@@ -305,11 +307,11 @@ public partial class MainViewModel : ObservableObject
         CaptureMng.SetCipboard(current.ms);
     }
 
-    [RelayCommand]
-    private void OpenInAnotherApp()
-    {
-        Process.Start("C:\\Users\\sakua\\Desktop\\a.png");
-    }
+    //[RelayCommand]
+    //private void OpenInAnotherApp()
+    //{
+    //    Process.Start("C:\\Users\\sakua\\Desktop\\a.png");
+    //}
 
     [RelayCommand]
     private void CancelBtn()
@@ -453,7 +455,7 @@ public partial class MainViewModel : ObservableObject
                 {
                     Stroke = new SolidColorBrush(Cont.SelectionRectBorder),
                     StrokeThickness = 2,
-                    Fill = new SolidColorBrush(Cont.SelectionRectArea) // 半透明
+                    Fill = new SolidColorBrush(Color.FromArgb(100, 0xe6, 0xe6, 0xfa))
                 };
 
                 Canvas.SetLeft(selectionRect, startPoint.X);

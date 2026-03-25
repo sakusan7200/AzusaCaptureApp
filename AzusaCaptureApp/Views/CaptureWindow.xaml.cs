@@ -63,8 +63,8 @@ public sealed partial class CaptureWindow : Window
         foreach (var a in resultrects)
         {
             var r = new Rectangle();
-            r.Fill = new SolidColorBrush(Color.FromArgb(10, 0, 0, 255));
-            r.Stroke = new SolidColorBrush(Color.FromArgb(250, 255, 0, 0));
+            //r.Fill = new SolidColorBrush(Color.FromArgb(10, 0, 0, 255));
+            r.Stroke = new SolidColorBrush(Color.FromArgb(250, 0xe6, 0xe6, 0xfa));
             r.StrokeThickness = 5;
 
             windowCnv.Children.Add(r);
@@ -77,14 +77,16 @@ public sealed partial class CaptureWindow : Window
             r.PointerEntered += (sender, e) =>
             {
                 var list2 = WindowEnumerator.EnumerateWindows();
-                r.Fill = new SolidColorBrush(Color.FromArgb(250, 0, 100, 255));
+                r.Fill = new SolidColorBrush(Color.FromArgb(200, 255, 255, 255));
+                //r.SetValue(r.Fill, new SolidColorBrush(Color.FromArgb(200, 255, 255, 255));
+                r.UpdateLayout();
 
                 Debug.WriteLine(r.Name);
             };
 
             r.PointerExited += (sender, e) =>
             {
-                r.Fill = new SolidColorBrush(Color.FromArgb(10, 0, 0, 255));
+                r.Fill = null;
             };
 
             r.PointerPressed += (sender, e) =>
