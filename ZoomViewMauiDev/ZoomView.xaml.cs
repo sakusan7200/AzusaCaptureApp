@@ -39,6 +39,8 @@ public sealed partial class ZoomView : UserControl
     {
         InitializeComponent();
 
+        //scrollViewer.HorizontalOffset
+
         Canvas.SetLeft(selectionAreaRectangle, 0);
         Canvas.SetTop(selectionAreaRectangle, 0);
 

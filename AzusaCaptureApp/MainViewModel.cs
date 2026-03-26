@@ -309,11 +309,14 @@ public partial class MainViewModel : ObservableObject
         CaptureMng.SetCipboard(current.ms);
     }
 
-    //[RelayCommand]
-    //private void OpenInAnotherApp()
-    //{
-    //    Process.Start("C:\\Users\\sakua\\Desktop\\a.png");
-    //}
+    [RelayCommand]
+    private void OpenInAnotherApp()
+    {
+        var psi = new ProcessStartInfo();
+        psi.UseShellExecute = true;
+        psi.FileName = "C:\\Users\\sakua\\Desktop\\a.png";
+        Process.Start(psi);
+    }
 
     [RelayCommand]
     private void CancelBtn()
