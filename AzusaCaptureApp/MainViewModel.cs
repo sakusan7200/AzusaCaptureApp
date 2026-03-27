@@ -226,7 +226,6 @@ public partial class MainViewModel : ObservableObject
         savedFilePath = "";
 
         current.Set(current.ms, CaptureMng.CaptureFullScreen(current.ms));
-        //CurrentImgSource = CaptureMng.CaptureFullScreen(current.ms);
         fullsize.Set(new MemoryStream(), CaptureMng.ConvertFrom(current.ms));   
         OnPropertyChanged(nameof(FullSizeImg2));
         OnPropertyChanged(nameof(CurrentImg2));
@@ -372,8 +371,6 @@ public partial class MainViewModel : ObservableObject
         var folder = await openPicker.PickSingleFolderAsync();
         if (folder != null)
         {
-            //StorageApplicationPermissions.FutureAccessList.AddOrReplace("PickedFolderToken", folder);
-            //PickFolderOutputTextBlock.Text = "Picked folder: " + folder.Name;
             Setting.SaveTo = folder.Path;
         }
     }
@@ -419,56 +416,10 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async Task SaveTo()
     {
-        // Create a file picker
-        var savePicker = new FileSavePicker();
-
-        // See the sample code below for how to make the window accessible from the App class.
-        var window = App.CurrentMainWindow;
-
-        // Retrieve the window handle (HWND) of the current WinUI 3 window.
-        var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
-
-        // Initialize the file picker with the window handle (HWND).
-        WinRT.Interop.InitializeWithWindow.Initialize(savePicker, hWnd);
-
-        // Set options for your file picker
-        savePicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
-        // Dropdown of file types the user can save the file as
-
-        savePicker.FileTypeChoices.Clear();
-
-        //デフォルト設定のフォーマットが頭に来るようにする
-        savePicker.FileTypeChoices.Add(Setting.DefaultSaveFormat.formatName, new List<string>() { "." + Setting.DefaultSaveFormat.extension });
-
-        for (var i = 0; i < CompatibleFormat.AllFormats.Count; i++)
-        {
-            if (i == Setting.DefaultSaveFormatIndex) continue;
-            var f = CompatibleFormat.AllFormats[i];
-            savePicker.FileTypeChoices.Add(f.formatName, new List<string>() { "." + f.extension });
-        }
-
-        //foreach (var f in CompatibleFormat.AllFormats)
-        //{
-        //    //Debug.WriteLine(f.formatName + " " + f.extension);
-        //    savePicker.FileTypeChoices.Add(f.formatName, new List<string>() { "." + f.extension });
-        //}
-
-        //デフォルトのフォーマットを設定
-        //savePicker.DefaultFileExtension = "." + Setting.DefaultSaveFormat.extension;
-        
-
-        var file = await savePicker.PickSaveFileAsync();
-        if(file != null)
-        {
-            var magickformat = CompatibleFormat.AllFormats
-                .Find(x => "." + x.extension == file.FileType)
-                .magickFormat;
-
-            //todo
-            CaptureMng.SaveTo(file.Path, current.ms, magickformat);
-            isSaved = true;
-            savedFilePath = file.Path;
-        }
+        var r = await FileDialogMng.ShowSaveFileDialog(CompatibleFormat.AllFormats, Setting.DefaultSaveFormat);
+        CaptureMng.SaveTo(r.Item1, current.ms, r.Item2.magickFormat);
+        isSaved = true;
+        savedFilePath = r.Item1;
     }
 
     public void ShotByRect(AzusaRect rect)
@@ -493,20 +444,6 @@ public partial class MainViewModel : ObservableObject
                 cws.MoveToMainWindow();
                 Task.Delay(600);
                 StartCaptureCommand.Execute(null);
-                
-                /*GetShot();
-                CaptureMng.SaveTo(Setting.SaveTo + $"\\{f_name}.{Setting.DefaultSaveFormat.extension}", current.ms, Setting.DefaultSaveFormat.magickFormat);
-                
-                var btn = new AppNotificationButton("表示");
-                btn.AddArgument("show", "current");
-                var notification = new AppNotificationBuilder()
-                    .AddText(Cont.AppName)
-                    .AddText($"スクリーンショットを\n{f_name}.{Setting.DefaultSaveFormat.extension}\nとして保存し、クリップボードにコピーしました。")
-                    .AddButton(btn)
-                    .BuildNotification();
-
-                cws.MoveToMainWindow();
-                cws.Close();*/
                 break;
             case CaptureWay.AreaCapture:
                 startPoint = position;
@@ -550,20 +487,12 @@ public partial class MainViewModel : ObservableObject
         var width = (int)Math.Abs(position.X - startPoint.X);
         var height = (int)Math.Abs(position.Y - startPoint.Y);
         //トリミング
-        //var srcrect = new System.Drawing.Rectangle(x,y,width,height);
-
         DoTrim(x,y,width,height);
 
         cws.MoveToMainWindow();
         cws.Close();
 
-
         SetClipboard();
-
-        //通知
-        var btn = new AppNotificationButton("表示");
-        btn.AddArgument("show", "current");
-
     }
 
     private void DoTrim(int x, int y, int w, int h)
