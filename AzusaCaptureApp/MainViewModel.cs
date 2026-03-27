@@ -33,20 +33,11 @@ public partial class MainViewModel : ObservableObject
     IMainWindowService mws;
     public MainViewModel(ICaptureWindowService cws, IMainWindowService mws)
     {
-
-
         this.cws = cws;
         this.mws = mws;
         PropertyChanged += MainViewModel_PropertyChanged;
-        //CaptureMng.Init();
-
-        //FreeHandChecked = true;
 
         Setting = new AppSetting();
-
-        TestValue = "A";
-
-
         //設定読み出し
         if (File.Exists(Cont.SettingDir + "\\settings.json"))
         {
@@ -62,11 +53,6 @@ public partial class MainViewModel : ObservableObject
             Setting.SaveTo = Cont.DefaultSaveDir;
         }
 
-        //AllFormats = new ObservableCollection<CompatibleFormat>() 
-        //{ 
-
-        //};
-
         //標準ではエリアキャプチャ、設定で変更可能にする予定
         AreaCapChecked = true;
 
@@ -79,8 +65,6 @@ public partial class MainViewModel : ObservableObject
 
             if(e.PropertyName == nameof(WindowChecked))
             {
-                //OnPropertyChanged(nameof(WindowChecked));
-
                 cws.SwitchWindowRects(WindowChecked);
             }
 
@@ -163,28 +147,20 @@ public partial class MainViewModel : ObservableObject
         }
     }
 
-    private BIandMS current = new();
     public BitmapImage CurrentImg2
     {
-        get => current.bi;
+        get => aih.CurrentBitmapImage;
     }
-    private BIandMS fullsize = new();
     public BitmapImage FullSizeImg2
     {
-        get => fullsize.bi;
+        get => aih.FullBitmapImage;
     }
-
-    private BIandMS formerCurrent;
-    private BIandMS formerFull;
 
     Point startPoint;
     Rectangle selectionRect;
 
-    //独立させたい
-    private bool isSaved = false;
-    private string savedFilePath = "";
-
-    [ObservableProperty] private string testValue;
+    private AzusaImageHelper former_aih;
+    private AzusaImageHelper aih = new(isTakeCapture:false);
 
     [ObservableProperty] private bool fullScrChecked;
     [ObservableProperty] private bool areaCapChecked;
@@ -195,14 +171,12 @@ public partial class MainViewModel : ObservableObject
 
     [ObservableProperty] private bool isAlwaysTopChecked;
 
-    [ObservableProperty] private AzusaCaptureApp.AppSetting setting;
+    [ObservableProperty] private AppSetting setting;
 
     public bool IsDataNonNull
     {
         get => CurrentImg2 != null;
     }
-
-    //public ObservableCollection<CompatibleFormat> AllFormats { get; set; } = new ObservableCollection<CompatibleFormat>();
 
     [ObservableProperty] private int settingDefaultFormatIndex;
 
@@ -222,16 +196,9 @@ public partial class MainViewModel : ObservableObject
     //フルスクリーンでキャプチャし、メモリーストリームとImgSourceに保存する
     public void GetShot()
     {
-        isSaved = false;
-        savedFilePath = "";
-
-        current.Set(current.ms, CaptureMng.CaptureFullScreen(current.ms));
-        fullsize.Set(new MemoryStream(), CaptureMng.ConvertFrom(current.ms));   
+        aih = new();  
         OnPropertyChanged(nameof(FullSizeImg2));
         OnPropertyChanged(nameof(CurrentImg2));
-
-        current.ms.Position = 0;
-        current.ms.CopyTo(fullsize.ms);
     }
 
     public void ActivationProcess()
@@ -275,20 +242,14 @@ public partial class MainViewModel : ObservableObject
             //TODO: おかしい
             await Task.Delay(600);
         }
-        CaptureMng.Init(Setting.SaveTo, current.ms);
 
-        //mws.Close();
         GetShot();
 
         mws.MoveToMainWindow();
 
         var f_name = setting.GetFilenameFromFormat();
-
-        CaptureMng.SaveTo(Setting.SaveTo + $"\\{f_name}.{Setting.DefaultSaveFormat.extension}", current.ms, Setting.DefaultSaveFormat.magickFormat);
-
+        aih.Save(Setting.SaveTo + $"\\{f_name}.{Setting.DefaultSaveFormat.extension}", Setting.DefaultSaveFormat.magickFormat);
         ShowSavedNotification($"{ f_name}.{ Setting.DefaultSaveFormat.extension}");
-
-
         mws.MoveToMainWindow();
     }
 
@@ -297,32 +258,27 @@ public partial class MainViewModel : ObservableObject
     private void FinishTrim()
     {
         var rect = mws.FinishTrim();
-        var img = CaptureMng.Trim((int)Canvas.GetLeft(rect), (int)Canvas.GetTop(rect),
-            (int)rect.Width, (int)rect.Height,
-            current.ms, fullsize.ms);
-
-        current.Set(current.ms, img);
+        var ar = rect.ConvertToInternalRect();
+        aih.Trim(ar);
         OnPropertyChanged(nameof(CurrentImg2));
     }
 
     [RelayCommand]
     private void SetClipboard()
     {
-        CaptureMng.SetCipboard(current.ms);
+        aih.SetClipboard();
     }
 
     [RelayCommand]
     private async void OpenInAnotherApp()
     {
-        if (!isSaved)
+        if (!aih.IsSaved)
         {
             await SaveTo();
-
         }
         var psi = new ProcessStartInfo();
         psi.UseShellExecute = true;
-        //TODO
-        psi.FileName = savedFilePath;
+        psi.FileName = aih.LastSavedFilePath;
         Process.Start(psi);
 
     }
@@ -330,13 +286,12 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private void CancelBtn()
     {
-        current = formerCurrent;
-        fullsize = formerFull;
+        aih = new AzusaImageHelper(false);
+
         OnPropertyChanged(nameof(CurrentImg2));
         OnPropertyChanged(nameof(FullSizeImg2));
 
-        formerCurrent = null;
-        formerFull = null;
+
         cws.MoveToMainWindow();
         cws.Close();
     }
@@ -360,16 +315,8 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async void StartCapture2()
     {
-        //TODO 非同期に
-        formerCurrent = current.CopyInstance();
-        formerFull = fullsize.CopyInstance();
-
-        CaptureMng.Init(Setting.SaveTo, current.ms);
         mws.Minimaize();
-
-        //TODO: おかしい
         await Task.Delay(600);
-        //mws.Close();
         GetShot();
         App.ShowCaptureWindow();
     }
@@ -377,7 +324,6 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async void CaptureRightNow()
     {
-        CaptureMng.Init(Setting.SaveTo, current.ms);
         if (mws.IsActive())
         {
             mws.Minimaize();
@@ -399,19 +345,14 @@ public partial class MainViewModel : ObservableObject
     private async Task SaveTo()
     {
         var r = await FileDialogMng.ShowSaveFileDialog(CompatibleFormat.AllFormats, Setting.DefaultSaveFormat);
-        CaptureMng.SaveTo(r.Item1, current.ms, r.Item2.magickFormat);
-        isSaved = true;
-        savedFilePath = r.Item1;
+        aih.Save(r.Item1, r.Item2.magickFormat);
     }
 
     public void ShotByRect(AzusaRect rect)
     {
-
         DoTrim(rect.left, rect.top, rect.width, rect.height);
         cws.MoveToMainWindow();
         cws.Close();
-
-
         SetClipboard();
 
         //通知
@@ -478,12 +419,9 @@ public partial class MainViewModel : ObservableObject
 
     private void DoTrim(int x, int y, int w, int h)
     {
-        current.Set(current.ms, CaptureMng.Trim(x, y, w, h, current.ms));
+        aih.Trim(new AzusaRect() { left = x, top = y, right = x + w, bottom = y + h });
         OnPropertyChanged(nameof(CurrentImg2));
-        CaptureMng.SaveTo(Setting.SaveTo + $"{setting.GetFilenameFromFormat()}.{Setting.DefaultSaveFormat.extension}", current.ms, Setting.DefaultSaveFormat.magickFormat);
-        isSaved = true;
-        savedFilePath = Setting.SaveTo + $"{setting.GetFilenameFromFormat()}.{Setting.DefaultSaveFormat.extension}";
-        ShowSavedNotification($"{setting.GetFilenameFromFormat()}.{Setting.DefaultSaveFormat.extension}");
+        aih.Save(Setting.SaveTo + $"{Setting.GetFilenameFromFormat()}.{Setting.DefaultSaveFormat.extension}", Setting.DefaultSaveFormat.magickFormat);
     }
 
     private void ShowSavedNotification(string filename)

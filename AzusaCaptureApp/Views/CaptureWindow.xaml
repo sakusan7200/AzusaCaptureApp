@@ -31,6 +31,7 @@
         
         <!--アニメーションpngがあるんだとか-->
         <!-- 中央配置のツールバー -->
+        <!-- SelectorBarに移行したいか、ユーザーコントロールに分離 -->
         <StackPanel Orientation="Horizontal"
                 HorizontalAlignment="Center"
                 VerticalAlignment="Top"

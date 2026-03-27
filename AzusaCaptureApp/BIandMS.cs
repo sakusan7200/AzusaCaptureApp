@@ -10,6 +10,11 @@ namespace AzusaCaptureApp;
 
 public class BIandMS
 {
+    public BIandMS()
+    {
+        ms = new();
+    }
+
     public MemoryStream ms { get; private set; } = new();
     public BitmapImage bi { get;private set; }
 
