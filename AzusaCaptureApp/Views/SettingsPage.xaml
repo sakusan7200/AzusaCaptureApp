@@ -16,8 +16,7 @@
         </Grid.RowDefinitions>
         <Button Style="{StaticResource NavigationBackButtonNormalStyle}"
                 ToolTipService.ToolTip="Back"
-                Click="Button_Click"
-                Content="{Binding TestValue}"/>
+                Click="Button_Click"/>
         <Grid Grid.Row="1" Background="YellowGreen">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
                 <TextBlock Text="設定ファイルは%AppData%...です" HorizontalAlignment="Center" />
@@ -35,6 +34,9 @@
                         <ColumnDefinition/>
                         <ColumnDefinition Width="80"/>
                     </Grid.ColumnDefinitions>
+                    
+                    
+                    
                     <TextBlock VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" TextAlignment="Left" Text="保存先"/>
                     <TextBox Text="{Binding Setting.SaveTo, Mode=TwoWay}" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" TextAlignment="Left"/>
                     <Button Grid.Row="0" Grid.Column="2" Command="{Binding ShowOFDForSettingCommand}" Content="参照"/>
@@ -82,7 +84,7 @@
                         <ColumnDefinition Width="80"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" TextAlignment="Left" Text="保存時のフォーマット"/>
-                    <ComboBox Grid.Row="0" Grid.Column="2" SelectedItem="{Binding Setting.DefaultFormat}" ItemsSource="{Binding AllFormats}"/>
+                    <ComboBox Grid.Row="0" Grid.Column="2" Width="100" SelectedIndex="{Binding SettingDefaultFormatIndex, Mode=TwoWay}" ItemsSource="{x:Bind local:CompatibleFormat.AllFormats}"/>
                 </Grid>
             </Border>
 

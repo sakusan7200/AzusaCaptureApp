@@ -10,6 +10,7 @@
     xmlns:zoom="using:ZoomViewMauiDev"
     mc:Ignorable="d">
 
+
     <Grid>
         <Grid.Resources>
             <Style x:Key="TopLeft" TargetType="Thumb">
@@ -45,7 +46,7 @@
         
         <Grid x:Name="mainContent">
             <Grid.RowDefinitions>
-                <RowDefinition Height="45px"/>
+                <RowDefinition Height="44px"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
@@ -55,10 +56,10 @@
             <TitleBar Title="AzusaCaptureApp">
                 <TitleBar.Content>
                     <Grid>
-                        
                         <CommandBar x:Name="cmdBar" Grid.Row="0" Grid.Column="0" IsSticky="True" IsOpen="False" DefaultLabelPosition="Right">
                             
                             
+
                             <AppBarButton Icon="Save" IsEnabled="{Binding IsDataNonNull}" Command="{Binding SaveToCommand}" Label="保存">
                                 <AppBarButton.KeyboardAccelerators>
                                     <KeyboardAccelerator Key="S" Modifiers="Control"/> 
@@ -73,13 +74,9 @@
 
 
 
-                            <AppBarButton Icon="OpenWith" IsEnabled="{Binding IsDataNonNull}" Command="{Binding OpenInAnotherAppCommand}" Label="ほかのプログラムで開く">
-
-                                <AppBarButton.ContextFlyout>
-                                    <MenuFlyout>
-                                        <MenuFlyoutItem Text="aaaa"/>
-                                    </MenuFlyout>
-                                </AppBarButton.ContextFlyout>
+                            <AppBarButton Icon="OpenWith" IsEnabled="{Binding IsDataNonNull}" Command="{Binding OpenInAnotherAppCommand}" Label="ほかのプログラムで開く"
+                                          DoubleTapped="AppBarButton_DoubleTapped">
+                               
                             </AppBarButton>
 
                             <AppBarButton Icon="Crop" IsEnabled="{Binding IsDataNonNull}" Command="{Binding StartTrimingCommand}" Label="トリミング"/>

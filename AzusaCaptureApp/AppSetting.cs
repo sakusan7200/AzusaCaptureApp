@@ -26,19 +26,23 @@ public partial class AppSetting : ObservableObject
             Directory.CreateDirectory(Cont.SettingDir);
         }
         var jsonstr = JsonConvert.SerializeObject(this);
-        //File.WriteAllText(Cont.SettingDir + "\\settings.json", jsonstr);
-
         using var sw = new StreamWriter(Cont.SettingDir + "\\settings.json");
         sw.Write(jsonstr);
+    }
 
-        //var fullpath = Windows.ApplicationModel.Package.Current.Id;
+    public CompatibleFormat DefaultSaveFormat
+    {
+        get
+        {
+            return CompatibleFormat.AllFormats[DefaultSaveFormatIndex];
+        }
     }
 
     [ObservableProperty] public string saveTo;
-    [ObservableProperty] public CaptureWay defaultWay;
     [ObservableProperty] public bool autoSave;
     [ObservableProperty] public bool autoCopy;
-    [ObservableProperty] public CompatibleFormat defalutFormat;
+    //[ObservableProperty] public CompatibleFormat defaultFormat;
+    [ObservableProperty] public int defaultSaveFormatIndex;
 
     public string GetFilenameFromFormat()
     {
@@ -59,6 +63,23 @@ public enum CaptureWay
 
 public struct CompatibleFormat
 {
+    public static List<CompatibleFormat> AllFormats { get; } = new List<CompatibleFormat>()
+    {
+            new CompatibleFormat(MagickFormat.Png, "png", "PNG画像"),
+            new CompatibleFormat(MagickFormat.Jpg, "jpg", "JPG画像"),
+            new CompatibleFormat(MagickFormat.Avif, "avif", "AVIF画像"),
+            new CompatibleFormat(MagickFormat.WebP, "webp", "WEBP画像"),
+            new CompatibleFormat(MagickFormat.Gif, "gif", "GIF画像"),
+            new CompatibleFormat(MagickFormat.Heic, "heic", "HEIC画像"),
+            new CompatibleFormat(MagickFormat.Bmp, "bmp", "ビットマップイメージ"),
+            new CompatibleFormat(MagickFormat.Icon, "ico", "アイコン"),
+            new CompatibleFormat(MagickFormat.Eps, "eps", "EPS画像"),
+            new CompatibleFormat(MagickFormat.Raw, "raw", "RAW画像"),
+            new CompatibleFormat(MagickFormat.Pdf, "pdf", "PDFドキュメント"),
+            new CompatibleFormat(MagickFormat.Svg, "svg", "svg画像"),
+            new CompatibleFormat(MagickFormat.Tiff, "tiff", "TIFF画像"),
+    };
+
     public CompatibleFormat(MagickFormat f, string e, string fn)
     {
         magickFormat = f;
@@ -75,4 +96,8 @@ public struct CompatibleFormat
         return formatName;
     }
 
+    public static implicit operator CompatibleFormat(int v)
+    {
+        throw new NotImplementedException();
+    }
 }

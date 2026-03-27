@@ -30,6 +30,8 @@ public sealed partial class MainPage : Page
     double imgWidth;
     double imgHeight;
 
+    
+
 
     public MainPage()
     {
@@ -63,5 +65,10 @@ public sealed partial class MainPage : Page
 
 
         return zoomView.GetRect();
+    }
+
+    private void AppBarButton_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+    {
+        //App.VM.ShowOpeNAnotherAppDialogComand.Execute(null);
     }
 }

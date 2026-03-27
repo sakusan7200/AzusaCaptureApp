@@ -19,4 +19,13 @@ public class BIandMS
         bi = b;
         //callback(bi);
     }
+
+    public BIandMS CopyInstance()
+    {
+        var r = new BIandMS();
+        ms.CopyTo(r.ms);
+        r.Set(r.ms, CaptureMng.ConvertFromBytes(ms.ToArray()));
+
+        return r;
+    }
 }

@@ -41,7 +41,6 @@
                 CornerRadius="4">
             <AppBarToggleButton x:Name="FullScrCapToggleButton" IsChecked="{Binding FullScrChecked, Mode=TwoWay}" Icon="Accept" Label="画面全体"/>
             <AppBarToggleButton x:Name="AreaCapToggleButton" IsChecked="{Binding AreaCapChecked, Mode=TwoWay}" Icon="Accept" Label="範囲選択"/>
-            <AppBarToggleButton x:Name="FreeHandCapToggleButton" IsChecked="{Binding FreeHandChecked, Mode=TwoWay}" Icon="Accept" Label="フリーハンド"/>
             <AppBarToggleButton x:Name="WindowCapToggleButton" IsChecked="{Binding WindowChecked, Mode=TwoWay}" Icon="Accept" Label="ウィンドウ"/>
             <AppBarSeparator/>
             <AppBarToggleButton x:Name="FullScrGIFCapToggleButton" IsChecked="{Binding FullScrGIFChecked, Mode=TwoWay}" Icon="Video" Label="全画面GIF"/>

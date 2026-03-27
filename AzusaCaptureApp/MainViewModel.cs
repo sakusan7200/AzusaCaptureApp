@@ -13,7 +13,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Windows.Foundation;
 using Windows.Storage.AccessCache;
 using Windows.Storage.Pickers;
@@ -51,6 +53,8 @@ public partial class MainViewModel : ObservableObject
             var jsonstr = File.ReadAllText(Cont.SettingDir + "\\settings.json");
             Setting = JsonConvert.DeserializeObject<AppSetting>(jsonstr);
 
+            SettingDefaultFormatIndex = Setting.DefaultSaveFormatIndex;
+
         }
         else
         {
@@ -58,14 +62,10 @@ public partial class MainViewModel : ObservableObject
             Setting.SaveTo = Cont.DefaultSaveDir;
         }
 
-        AllFormats = new ObservableCollection<CompatibleFormat>() 
-        { 
-            new CompatibleFormat(MagickFormat.Png, "png", "PNG画像"),
-            new CompatibleFormat(MagickFormat.Jpg, "jpg", "JPG画像"),
-            new CompatibleFormat(MagickFormat.Avif, "avif", "AVIF画像"),
-            new CompatibleFormat(MagickFormat.Heic, "heic", "HEIC画像"),
+        //AllFormats = new ObservableCollection<CompatibleFormat>() 
+        //{ 
 
-        };
+        //};
 
         //標準ではエリアキャプチャ、設定で変更可能にする予定
         AreaCapChecked = true;
@@ -82,6 +82,11 @@ public partial class MainViewModel : ObservableObject
                 //OnPropertyChanged(nameof(WindowChecked));
 
                 cws.SwitchWindowRects(WindowChecked);
+            }
+
+            if(e.PropertyName == nameof(SettingDefaultFormatIndex))
+            {
+                Setting.DefaultSaveFormatIndex = SettingDefaultFormatIndex;
             }
         };
     }
@@ -169,8 +174,15 @@ public partial class MainViewModel : ObservableObject
         get => fullsize.bi;
     }
 
+    private BIandMS formerCurrent;
+    private BIandMS formerFull;
+
     Point startPoint;
     Rectangle selectionRect;
+
+    //独立させたい
+    private bool isSaved = false;
+    private string savedFilePath = "";
 
     [ObservableProperty] private string testValue;
 
@@ -190,8 +202,9 @@ public partial class MainViewModel : ObservableObject
         get => CurrentImg2 != null;
     }
 
-    public ObservableCollection<CompatibleFormat> AllFormats { get; set; } = new ObservableCollection<CompatibleFormat>();
+    //public ObservableCollection<CompatibleFormat> AllFormats { get; set; } = new ObservableCollection<CompatibleFormat>();
 
+    [ObservableProperty] private int settingDefaultFormatIndex;
 
     private CaptureWay WhatWay()
     {
@@ -209,6 +222,9 @@ public partial class MainViewModel : ObservableObject
     //フルスクリーンでキャプチャし、メモリーストリームとImgSourceに保存する
     public void GetShot()
     {
+        isSaved = false;
+        savedFilePath = "";
+
         current.Set(current.ms, CaptureMng.CaptureFullScreen(current.ms));
         //CurrentImgSource = CaptureMng.CaptureFullScreen(current.ms);
         fullsize.Set(new MemoryStream(), CaptureMng.ConvertFrom(current.ms));   
@@ -217,7 +233,6 @@ public partial class MainViewModel : ObservableObject
 
         current.ms.Position = 0;
         current.ms.CopyTo(fullsize.ms);
-
     }
 
     public void ActivationProcess()
@@ -270,21 +285,10 @@ public partial class MainViewModel : ObservableObject
 
         var f_name = setting.GetFilenameFromFormat();
 
-        CaptureMng.SaveTo(Setting.SaveTo + $"\\{f_name}.png", current.ms, Setting.DefalutFormat.magickFormat);
-        var btn = new AppNotificationButton("表示");
-        btn.AddArgument("show", "current");
-        // TODO: com exception 要素が見つかりません
+        CaptureMng.SaveTo(Setting.SaveTo + $"\\{f_name}.{Setting.DefaultSaveFormat.extension}", current.ms, Setting.DefaultSaveFormat.magickFormat);
 
+        ShowSavedNotification($"{ f_name}.{ Setting.DefaultSaveFormat.extension}");
 
-        new ToastContentBuilder()
-        .AddText($"スクリーンショットを\n{f_name}.png\nとして保存し、クリップボードにコピーしました。")
-        .AddButton(
-            new ToastButton()
-            .SetContent("Reply")
-            .AddArgument("action", "reply")
-            .SetBackgroundActivation()
-        )
-        .Show();
 
         mws.MoveToMainWindow();
     }
@@ -302,7 +306,6 @@ public partial class MainViewModel : ObservableObject
         OnPropertyChanged(nameof(CurrentImg2));
     }
 
-
     [RelayCommand]
     private void SetClipboard()
     {
@@ -310,17 +313,31 @@ public partial class MainViewModel : ObservableObject
     }
 
     [RelayCommand]
-    private void OpenInAnotherApp()
+    private async void OpenInAnotherApp()
     {
+        if (!isSaved)
+        {
+            await SaveTo();
+
+        }
         var psi = new ProcessStartInfo();
         psi.UseShellExecute = true;
-        psi.FileName = "C:\\Users\\sakua\\Desktop\\a.png";
+        //TODO
+        psi.FileName = savedFilePath;
         Process.Start(psi);
+
     }
 
     [RelayCommand]
     private void CancelBtn()
     {
+        current = formerCurrent;
+        fullsize = formerFull;
+        OnPropertyChanged(nameof(CurrentImg2));
+        OnPropertyChanged(nameof(FullSizeImg2));
+
+        formerCurrent = null;
+        formerFull = null;
         cws.MoveToMainWindow();
         cws.Close();
     }
@@ -334,8 +351,9 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async void ShowOFDForSetting()
     {
+        //TODO 分離
         // Create a folder picker
-        FolderPicker openPicker = new Windows.Storage.Pickers.FolderPicker();
+        var openPicker = new Windows.Storage.Pickers.FolderPicker();
 
         // See the sample code below for how to make the window accessible from the App class.
         var window = App.CurrentMainWindow;
@@ -354,7 +372,7 @@ public partial class MainViewModel : ObservableObject
         var folder = await openPicker.PickSingleFolderAsync();
         if (folder != null)
         {
-            StorageApplicationPermissions.FutureAccessList.AddOrReplace("PickedFolderToken", folder);
+            //StorageApplicationPermissions.FutureAccessList.AddOrReplace("PickedFolderToken", folder);
             //PickFolderOutputTextBlock.Text = "Picked folder: " + folder.Name;
             Setting.SaveTo = folder.Path;
         }
@@ -363,6 +381,10 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async void StartCapture2()
     {
+        //TODO 非同期に
+        formerCurrent = current.CopyInstance();
+        formerFull = fullsize.CopyInstance();
+
         CaptureMng.Init(Setting.SaveTo, current.ms);
         mws.Minimaize();
 
@@ -414,15 +436,38 @@ public partial class MainViewModel : ObservableObject
         // Dropdown of file types the user can save the file as
 
         savePicker.FileTypeChoices.Clear();
-        foreach (var f in AllFormats)
+
+        //デフォルト設定のフォーマットが頭に来るようにする
+        savePicker.FileTypeChoices.Add(Setting.DefaultSaveFormat.formatName, new List<string>() { "." + Setting.DefaultSaveFormat.extension });
+
+        for (var i = 0; i < CompatibleFormat.AllFormats.Count; i++)
         {
-            //Debug.WriteLine(f.formatName + " " + f.extension);
+            if (i == Setting.DefaultSaveFormatIndex) continue;
+            var f = CompatibleFormat.AllFormats[i];
             savePicker.FileTypeChoices.Add(f.formatName, new List<string>() { "." + f.extension });
         }
+
+        //foreach (var f in CompatibleFormat.AllFormats)
+        //{
+        //    //Debug.WriteLine(f.formatName + " " + f.extension);
+        //    savePicker.FileTypeChoices.Add(f.formatName, new List<string>() { "." + f.extension });
+        //}
+
+        //デフォルトのフォーマットを設定
+        //savePicker.DefaultFileExtension = "." + Setting.DefaultSaveFormat.extension;
+        
+
         var file = await savePicker.PickSaveFileAsync();
         if(file != null)
         {
-            CaptureMng.SaveTo(file.Path, current.ms, MagickFormat.Png);
+            var magickformat = CompatibleFormat.AllFormats
+                .Find(x => "." + x.extension == file.FileType)
+                .magickFormat;
+
+            //todo
+            CaptureMng.SaveTo(file.Path, current.ms, magickformat);
+            isSaved = true;
+            savedFilePath = file.Path;
         }
     }
 
@@ -445,19 +490,23 @@ public partial class MainViewModel : ObservableObject
         switch (WhatWay())
         {
             case CaptureWay.FullScreen:
-                GetShot();
-                CaptureMng.SaveTo(Setting.SaveTo + $"\\{f_name}.png", current.ms, Setting.DefalutFormat.magickFormat);
+                cws.MoveToMainWindow();
+                Task.Delay(600);
+                StartCaptureCommand.Execute(null);
+                
+                /*GetShot();
+                CaptureMng.SaveTo(Setting.SaveTo + $"\\{f_name}.{Setting.DefaultSaveFormat.extension}", current.ms, Setting.DefaultSaveFormat.magickFormat);
                 
                 var btn = new AppNotificationButton("表示");
                 btn.AddArgument("show", "current");
                 var notification = new AppNotificationBuilder()
                     .AddText(Cont.AppName)
-                    .AddText($"スクリーンショットを\n{f_name}.png\nとして保存し、クリップボードにコピーしました。")
+                    .AddText($"スクリーンショットを\n{f_name}.{Setting.DefaultSaveFormat.extension}\nとして保存し、クリップボードにコピーしました。")
                     .AddButton(btn)
                     .BuildNotification();
 
                 cws.MoveToMainWindow();
-                cws.Close();
+                cws.Close();*/
                 break;
             case CaptureWay.AreaCapture:
                 startPoint = position;
@@ -521,6 +570,23 @@ public partial class MainViewModel : ObservableObject
     {
         current.Set(current.ms, CaptureMng.Trim(x, y, w, h, current.ms));
         OnPropertyChanged(nameof(CurrentImg2));
-        CaptureMng.SaveTo(Setting.SaveTo + $"\\{setting.GetFilenameFromFormat()}.png", current.ms, Setting.DefalutFormat.magickFormat);
+        CaptureMng.SaveTo(Setting.SaveTo + $"{setting.GetFilenameFromFormat()}.{Setting.DefaultSaveFormat.extension}", current.ms, Setting.DefaultSaveFormat.magickFormat);
+        isSaved = true;
+        savedFilePath = Setting.SaveTo + $"{setting.GetFilenameFromFormat()}.{Setting.DefaultSaveFormat.extension}";
+        ShowSavedNotification($"{setting.GetFilenameFromFormat()}.{Setting.DefaultSaveFormat.extension}");
+    }
+
+    private void ShowSavedNotification(string filename)
+    {
+
+        new ToastContentBuilder()
+        .AddText($"スクリーンショットを\n{filename}\nとして保存し、クリップボードにコピーしました。")
+        .AddButton(
+            new ToastButton()
+            .SetContent("Reply")
+            .AddArgument("action", "reply")
+            .SetBackgroundActivation()
+        )
+        .Show();
     }
 }

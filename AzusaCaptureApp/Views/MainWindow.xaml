@@ -10,6 +10,10 @@
     xmlns:tb="using:H.NotifyIcon"
     Title="AzusaCaptureApp">
 
+    <Window.SystemBackdrop>
+        <MicaBackdrop/>
+    </Window.SystemBackdrop>
+
 
     <StackPanel>
         <!--<Grid x:Name="mainContent">
