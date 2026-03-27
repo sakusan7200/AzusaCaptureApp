@@ -350,28 +350,10 @@ public partial class MainViewModel : ObservableObject
     [RelayCommand]
     private async void ShowOFDForSetting()
     {
-        //TODO 分離
-        // Create a folder picker
-        var openPicker = new Windows.Storage.Pickers.FolderPicker();
-
-        // See the sample code below for how to make the window accessible from the App class.
-        var window = App.CurrentMainWindow;
-
-        // Retrieve the window handle (HWND) of the current WinUI 3 window.
-        var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
-
-        // Initialize the folder picker with the window handle (HWND).
-        WinRT.Interop.InitializeWithWindow.Initialize(openPicker, hWnd);
-
-        // Set options for your folder picker
-        openPicker.SuggestedStartLocation = PickerLocationId.Desktop;
-        openPicker.FileTypeFilter.Add("*");
-
-        // Open the picker for the user to pick a folder
-        var folder = await openPicker.PickSingleFolderAsync();
-        if (folder != null)
+        var path = await FileDialogMng.ShowOpenFolderDialog();
+        if(path != null)
         {
-            Setting.SaveTo = folder.Path;
+            Setting.SaveTo = path;
         }
     }
 
@@ -468,7 +450,6 @@ public partial class MainViewModel : ObservableObject
 
         if (selectionRect == null) return;
 
-
         var x = Math.Min(position.X, startPoint.X);
         var y = Math.Min(position.Y, startPoint.Y);
         var width = Math.Abs(position.X - startPoint.X);
@@ -507,7 +488,6 @@ public partial class MainViewModel : ObservableObject
 
     private void ShowSavedNotification(string filename)
     {
-
         new ToastContentBuilder()
         .AddText($"スクリーンショットを\n{filename}\nとして保存し、クリップボードにコピーしました。")
         .AddButton(

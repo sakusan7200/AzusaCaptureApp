@@ -58,4 +58,35 @@ internal static class FileDialogMng
         }
 
     }
+
+    internal static async Task<string> ShowOpenFolderDialog()
+    {
+        // Create a folder picker
+        var openPicker = new Windows.Storage.Pickers.FolderPicker();
+
+        // See the sample code below for how to make the window accessible from the App class.
+        var window = App.CurrentMainWindow;
+
+        // Retrieve the window handle (HWND) of the current WinUI 3 window.
+        var hWnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
+
+        // Initialize the folder picker with the window handle (HWND).
+        WinRT.Interop.InitializeWithWindow.Initialize(openPicker, hWnd);
+
+        // Set options for your folder picker
+        openPicker.SuggestedStartLocation = PickerLocationId.Desktop;
+        openPicker.FileTypeFilter.Add("*");
+
+        // Open the picker for the user to pick a folder
+        var folder = await openPicker.PickSingleFolderAsync();
+        if (folder != null)
+        {
+            return folder.Path;
+            //Setting.SaveTo = folder.Path;
+        }
+        else
+        {
+            return null;
+        }
+    }
 }
