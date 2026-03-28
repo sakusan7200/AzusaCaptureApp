@@ -17,12 +17,13 @@ public static class Cont
 
     }
 
-    public static string AppName = "AzusaCapture";
+    public const string AppName = "AzusaCapture";
     public static readonly string RomingDir = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
 
     public static readonly string SettingDir = RomingDir + "\\AzusaCaptureApp";
 
     public static readonly string MyPictureDir = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures);
+    public const string AutoStartRegDir = @"Software\Microsoft\Windows\CurrentVersion\Run";
 #if DEBUG
     public static readonly string DefaultSaveDir = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures) + "\\AC_DEBUG\\";
 #else

@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using System.IO.Packaging;
 using Windows.ApplicationModel;
 using ImageMagick;
+using Microsoft.UI.Xaml;
 
 namespace AzusaCaptureApp;
 
@@ -43,6 +44,38 @@ public partial class AppSetting : ObservableObject
     [ObservableProperty] public bool autoCopy;
     //[ObservableProperty] public CompatibleFormat defaultFormat;
     [ObservableProperty] public int defaultSaveFormatIndex;
+
+    public bool AutoStart
+    {
+        get
+        {
+            Microsoft.Win32.RegistryKey regkey =
+                Microsoft.Win32.Registry.CurrentUser.OpenSubKey(
+                Cont.AutoStartRegDir, true);
+
+            var a = regkey.GetValue(Cont.AppName);
+
+            return a != null;
+        }
+
+        set
+        {
+            Microsoft.Win32.RegistryKey regkey =
+                Microsoft.Win32.Registry.CurrentUser.OpenSubKey(
+                Cont.AutoStartRegDir, true);
+            if (value == true)
+            {
+                regkey.SetValue(Cont.AppName, Environment.ProcessPath + " -b");
+            }
+            else
+            {
+                regkey.DeleteValue(Cont.AppName);
+            }
+            regkey.Close();
+
+            OnPropertyChanged(nameof(AutoStart));
+        }
+    }
 
     public string GetFilenameFromFormat()
     {

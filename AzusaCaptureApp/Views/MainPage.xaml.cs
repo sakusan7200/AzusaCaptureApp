@@ -44,31 +44,20 @@ public sealed partial class MainPage : Page
 
     public void StartTriming()
     {
-        //cnv.Visibility = Visibility.Visible;
         cmdBar.Visibility = Visibility.Collapsed;
         trimCmdBar.Visibility = Visibility.Visible;
-        //fullSizeImg.Visibility = Visibility.Visible;
-        //img.Visibility = Visibility.Collapsed;
         zoomView.Visibility = Visibility.Visible;
     }
 
     public Microsoft.UI.Xaml.Shapes.Rectangle DoneTriming()
     {
-        //cnv.Visibility = Visibility.Collapsed;
         cmdBar.Visibility = Visibility.Visible;
         trimCmdBar.Visibility = Visibility.Collapsed;
-        //fullSizeImg.Visibility = Visibility.Collapsed;
-        //img.Visibility = Visibility.Visible;
         zoomView.Visibility = Visibility.Collapsed;
 
         scrollViewer.ChangeView(0, 0, 0);
 
 
         return zoomView.GetRect();
-    }
-
-    private void AppBarButton_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
-    {
-        //App.VM.ShowOpeNAnotherAppDialogComand.Execute(null);
     }
 }

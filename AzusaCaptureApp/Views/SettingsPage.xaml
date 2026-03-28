@@ -6,6 +6,7 @@
     xmlns:local="using:AzusaCaptureApp"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:CommunityToolkit.WinUI.Controls"
     mc:Ignorable="d">
 
     <Grid x:Name="mainContent">
@@ -19,90 +20,52 @@
                 Click="Button_Click"/>
         <Grid Grid.Row="1" Background="YellowGreen">
             <StackPanel HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Text="設定ファイルは%AppData%...です" HorizontalAlignment="Center" />
+                <TextBlock>
+                        <Run Text="設定ファイルは"/>
+                        <Run Text="{x:Bind local:Cont.SettingDir}"/>
+                        <Run Text="にあります。"/>
+                </TextBlock>
             </StackPanel>
         </Grid>
 
-        <StackPanel Grid.Row="2" Spacing="20" Background="#202020" Padding="100,20,100,0">
-            <Border Padding="10" CornerRadius="10" Background="#2b2b2b" BorderBrush="#DDD">
+        <StackPanel Grid.Row="2" Spacing="20" Padding="100,20,100,0">
+            <controls:SettingsCard Header="保存先" Description="画像の保存先">
+
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="50"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="100"/>
                         <ColumnDefinition/>
-                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    
-                    
-                    
-                    <TextBlock VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" TextAlignment="Left" Text="保存先"/>
-                    <TextBox Text="{Binding Setting.SaveTo, Mode=TwoWay}" VerticalAlignment="Center" Grid.Row="0" Grid.Column="1" TextAlignment="Left"/>
+
+
+
+                    <TextBox Text="{Binding Setting.SaveTo, Mode=TwoWay}" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" TextAlignment="Left"/>
                     <Button Grid.Row="0" Grid.Column="2" Command="{Binding ShowOFDForSettingCommand}" Content="参照"/>
                 </Grid>
-            </Border>
+            </controls:SettingsCard>
+            
 
-            <Border Padding="10" CornerRadius="10" Background="#2b2b2b" BorderBrush="#DDD">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="50"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="100"/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="80"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" TextAlignment="Left" Text="自動保存"/>
-                    <ToggleSwitch IsOn="{Binding Setting.AutoSave, Mode=TwoWay}" Grid.Row="0" Grid.Column="2"/>
-                </Grid>
-            </Border>
+            <controls:SettingsCard Header="自動保存" Description="キャプチャ時に、上記保存先に即時自動で保存するか">
+                <ToggleSwitch IsOn="{Binding Setting.AutoSave, Mode=TwoWay}"/>
 
-            <Border Padding="10" CornerRadius="10" Background="#2b2b2b" BorderBrush="#DDD">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="50"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="80"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" TextAlignment="Left" Text="自動でクリップボードにコピー"/>
-                    <ToggleSwitch IsOn="{Binding Setting.AutoCopy, Mode=TwoWay}" Grid.Row="0" Grid.Column="2"/>
-                </Grid>
-            </Border>
+            </controls:SettingsCard>
 
-            <Border Padding="10" CornerRadius="10" Background="#2b2b2b" BorderBrush="#DDD">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="50"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="80"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" TextAlignment="Left" Text="保存時のフォーマット"/>
-                    <ComboBox Grid.Row="0" Grid.Column="2" Width="100" SelectedIndex="{Binding SettingDefaultFormatIndex, Mode=TwoWay}" ItemsSource="{x:Bind local:CompatibleFormat.AllFormats}"/>
-                </Grid>
-            </Border>
+            <controls:SettingsCard Header="自動コピー" Description="キャプチャ時に、上記保存先に即時自動で保存するか">
+                <ToggleSwitch IsOn="{Binding Setting.AutoCopy, Mode=TwoWay}"/>
+            </controls:SettingsCard>
 
-            <Border Padding="10" CornerRadius="10" Background="#2b2b2b" BorderBrush="#DDD">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="50"/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition/>
-                        <ColumnDefinition/>
-                        <ColumnDefinition Width="80"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" TextAlignment="Left" Text="Windowsログオン時の自動起動"/>
-                    <!--レジストリをいじる必要あり-->
-                    <ToggleSwitch IsOn="{Binding Setting.AutoCopy, Mode=TwoWay}" Grid.Row="0" Grid.Column="2"/>
-                </Grid>
-            </Border>
+            <controls:SettingsCard Header="保存時のフォーマット" Description="自動保存で保存するときのフォーマット">
+                <ComboBox Grid.Row="0" Grid.Column="2" Width="100" SelectedIndex="{Binding SettingDefaultFormatIndex, Mode=TwoWay}" ItemsSource="{x:Bind local:CompatibleFormat.AllFormats}"/>
+
+            </controls:SettingsCard>
+
+            <controls:SettingsCard Header="ログオン時の自動起動" Description="Windowsにログオンしたときにこのアプリを自動起動するか設定します。\nご自身でレジストリを操作された場合、正常に動作しないことがあります。">
+                <ToggleSwitch IsOn="{Binding Setting.AutoStart, Mode=TwoWay}" Grid.Row="0" Grid.Column="2"/>
+
+            </controls:SettingsCard>
         </StackPanel>
     </Grid>
 </Page>

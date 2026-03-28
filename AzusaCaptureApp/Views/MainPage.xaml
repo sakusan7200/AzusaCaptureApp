@@ -74,8 +74,7 @@
 
 
 
-                            <AppBarButton Icon="OpenWith" IsEnabled="{Binding IsDataNonNull}" Command="{Binding OpenInAnotherAppCommand}" Label="ほかのプログラムで開く"
-                                          DoubleTapped="AppBarButton_DoubleTapped">
+                            <AppBarButton Icon="OpenWith" IsEnabled="{Binding IsDataNonNull}" Command="{Binding OpenInAnotherAppCommand}" Label="ほかのプログラムで開く">
                                
                             </AppBarButton>
 
