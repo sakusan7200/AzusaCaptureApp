@@ -8,7 +8,7 @@ WinUI3で構築された画面静止画キャプチャアプリです。
 [Releases](https://github.com/sakusan7200/AzusaCaptureApp/releases/tag/v0.2)より、インストーラーを入手できます。
 
 ## アンインストール方法
-インストール先のunins000.exeよりアンインストールできます。設定も削除したい場合は、`%AppData%\Roaming\AzusaCaptureApp`と、レジストリキー`HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run\AzusaCapture`を削除してください。
+インストール先のunins000.exeよりアンインストールできます。設定も削除したい場合は、`%AppData%\AzusaCaptureApp`と、レジストリキー`HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Run\AzusaCapture`を削除してください。
 将来的にアンインストーラーから削除できるようにすることを考えています。
 
 ## 機能
